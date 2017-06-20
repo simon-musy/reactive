@@ -20,13 +20,23 @@
   "dependencies": {
     "rxjs": "^5.4.0",
     "react": "^15.5.4",
-    "react-dom": "^15.5.4"
+    "react-dom": "^15.5.4",
+    "redux": "^3.6.0",
+    "react-redux":"^5.0.5",
+    "redux-observable": "^0.14.1",
+    "redux-devtools-extension": "^2.13.2",
+    "redux-logger": "^3.0.6",
+    "semantic-ui-react": "^0.68.5",
+    "semantic-ui-css": "^2.2.10"
   },
   "////": "these dependencies are required for building",
   "devDependencies": {
     "@types/react": "^15.0.25",
     "@types/react-dom": "^15.5.0",
+    "@types/redux":"^3.6.0",
+    "@types/react-redux": "^4.4.44",
     "@types/webpack-env": "^1.13.0",
+    "@types/redux-logger":"^3.0.0",
     "rimraf": "^2.6.1",
     "source-map-loader": "^0.2.1",
     "react-hot-loader": "^3.0.0-beta.7",

@@ -6,6 +6,7 @@
 		"eg2.tslint",
 		"msjsdiag.debugger-for-chrome",
 		"DSKWRK.vscode-generate-getter-setter",
-		"eg2.vscode-npm-script"
+		"eg2.vscode-npm-script",
+		"eamodio.gitlens"
 	]
 }

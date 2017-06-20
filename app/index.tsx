@@ -1,16 +1,19 @@
 // Import React and React DOM
-import * as React from 'react';
-import * as ReactDOM from 'react-dom';
+import * as React from "react";
+import * as ReactDOM from "react-dom";
+
+// Import semantic UI CSS
+import styles = require("semantic-ui-css/semantic.min.css");
 
 // Import the Hot Module Reloading App Container
-import { AppContainer } from 'react-hot-loader';
+import { AppContainer } from "react-hot-loader";
 
 // Import our react App container component
-import App from './containers/App';
+import App from "./containers/App";
 
 // This renders our App into the application root element, inside the HMR App Container
 // which handles the reloading
-const rootEl = document.getElementById('app');
+const rootEl = document.getElementById("app");
 ReactDOM.render(
   <AppContainer>
     <App/>
@@ -20,8 +23,8 @@ ReactDOM.render(
 
 // Hot Module Replacement API
 if (module.hot) {
-  module.hot.accept('./containers/App', () => {
-    const NextApp = require<RequireImport>('./containers/App').default;
+  module.hot.accept("./containers/App", () => {
+    const NextApp = require<RequireImport>("./containers/App").default;
     ReactDOM.render(
       <AppContainer>
         <NextApp />

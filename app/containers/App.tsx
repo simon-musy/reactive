@@ -1,29 +1,23 @@
-import * as React from 'react';
+import * as React from "react";
+import * as Redux from "redux";
+import * as ReduxObservable from "redux-observable";
+import * as ReactRedux from "react-redux";
+import { SearchContainer, searchReducer, searchEpics } from "./search";
+import WikipediaService from "services/wikipedia";
+import { configureStore } from "../configure-store";
 
-export default class App extends React.Component<any, any> {
-    private interval: number;
-    constructor() {
-        super();
-        this.state = { count: 0 };
-    }
+const store = configureStore<any>(Redux.combineReducers({
+    search: searchReducer
+}), ReduxObservable.combineEpics<any>(searchEpics),
+    { wikipedia: new WikipediaService() });
 
-    // This state will be maintained during hot reloads
-    public componentWillMount() {
-        this.interval = setInterval(() => {
-            this.setState({ count: this.state.count + 1 });
-        }, 1000);
-    }
-
-    public componentWillUnmount() {
-        clearInterval(this.interval);
-    }
-
-    public render() {
-        return (
+const App = () =>
+    (
+        <ReactRedux.Provider store={store}>
             <div>
-                <h1>Hello world!</h1>
-                <div>Welcome to hot-reloading React written in TypeScript! {this.state.count}</div>
+                <SearchContainer />
             </div>
-        );
-    }
-}
+        </ReactRedux.Provider>
+    );
+
+export default App;

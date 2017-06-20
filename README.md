@@ -1,5 +1,5 @@
-# Visual Studio Code - Typescript - React - Redux-Observable Boilerplate
-Boilerplate for hot-reload react-redux-observable Typescript experience in Visual Studio Code
+# Reactive programming course
+Material, samples and exercises for reactive programming course
 
 ## Setup guide
 1. Install node.js and npm package manager: https://nodejs.org/en/, or e.g. `sudo apt-get nodejs`, `sudo apt-get install npm`, `sudo apt-get install nodejs-legacy` (this latter one installs a symlink for `node` command to `nodejs`)

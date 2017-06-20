@@ -16,7 +16,7 @@
         ],
         "quotemark": [
             true,
-            "single",
+            "double",
             "avoid-escape"
         ],
         "object-literal-sort-keys": false,
@@ -32,7 +32,13 @@
             "timeEnd",
             "trace"
         ],
-        "no-var-requires": false
+        "no-var-requires": false,
+        "no-trailing-whitespace": false,
+        "interface-name": [false, "always-prefix"],
+        "eofline": false,
+        "ordered-imports": [
+            false
+        ]
     },
     "jsRules": {
         "max-line-length": [

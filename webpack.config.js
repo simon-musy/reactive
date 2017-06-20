@@ -2,6 +2,7 @@ var webpack = require('webpack');
 var path = require('path');
 var WebpackNotifierPlugin = require('webpack-notifier');
 var HtmlWebpackPlugin = require('html-webpack-plugin')
+var TsConfigPathsPlugin = require('awesome-typescript-loader').TsConfigPathsPlugin;
 
 module.exports = {
     // This option controls if and how source maps are generated: 
@@ -66,6 +67,15 @@ module.exports = {
         // https://webpack.js.org/configuration/resolve/#resolve-extensions
         // Add '.ts' and '.tsx' as resolvable extensions.
         extensions: ['.webpack.js', '.web.js', '.ts', '.tsx', '.js'],
+
+        // Necessary to support tsconfig.json baseUrl parameter: 
+        // https://github.com/s-panferov/awesome-typescript-loader#advanced-path-resolution-in-typescript-20
+        plugins : [
+            new TsConfigPathsPlugin({
+                tsconfig: path.resolve(__dirname, '/tsconfig.json'),
+                compiler: 'typescript'
+            })
+        ]
     },
      module: {
         loaders: [
