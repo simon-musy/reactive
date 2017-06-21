@@ -2,7 +2,7 @@
 {
     "tslint.enable": true,
     "tslint.alwaysShowRuleFailuresAsWarnings": true,
-    "typescript.referencesCodeLens.enabled": false,
+    "typescript.referencesCodeLens.enabled": true,
     "window.zoomLevel": 0,
     "files.exclude": {
         "**/.git": true,

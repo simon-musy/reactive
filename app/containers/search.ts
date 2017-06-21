@@ -3,15 +3,26 @@ import { SearchStateProps, SearchSuggestionProps, SearchInput, SearchDispatchPro
 import { connect, MapStateToProps, MapDispatchToProps, Dispatch, ComponentDecorator, DispatchProp, MapDispatchToPropsFunction } from "react-redux";
 import { Action, MiddlewareAPI, bindActionCreators } from "redux";
 import { ActionsObservable, combineEpics } from "redux-observable";
-import { Observable } from "rxjs/Rx";
+import * as Rx from "rxjs";
 import { IServices } from "services/services";
 import { createAction, TypedAction } from "utils/redux-observable-helpers";
 import { ComponentClass } from "@types/react";
 
-export interface SearchSuggestion {
-    readonly title: string;
-    readonly description: string;
-    readonly thumbnailUrl: string;
+export class SearchSuggestion {
+
+    public constructor(public readonly title: string,
+        public readonly description: string = "",
+        public readonly thumbnailUrl: string = "") {
+
+    }
+
+    public withDescription(description: string): SearchSuggestion {
+        return new SearchSuggestion(this.title, description, this.thumbnailUrl);
+    }
+
+    public withThumbnailUrl(thumbnailUrl: string): SearchSuggestion {
+        return new SearchSuggestion(this.title, this.description, thumbnailUrl);
+    }
 }
 
 export interface ISearchResults {
@@ -51,9 +62,9 @@ export class SearchState {
     public static empty: SearchState = new SearchState("", [], EmptyResult.Instance, false);
 
     public constructor(public readonly input: string,
-                       public readonly suggestions: SearchSuggestion[],
-                       public readonly searchResults: ISearchResults,
-                       public readonly loading: boolean) {
+        public readonly suggestions: SearchSuggestion[],
+        public readonly searchResults: ISearchResults,
+        public readonly loading: boolean) {
     }
 
     public withInput(input: string): SearchState {
@@ -81,8 +92,8 @@ const SUGGESTION_SELECTED = "SUGGESTION_SELECTED";
 const inputChanged = (input: string) => createAction(INPUT_CHANGED, input);
 const search = (input: string) => createAction(SEARCH, input);
 const suggest = (input: string) => createAction(SUGGEST, input);
-const suggestionSelected = (suggestion: SearchSuggestionProps) => createAction<SearchSuggestion>(SUGGESTION_SELECTED, 
-    { title: suggestion.title, description: suggestion.description, thumbnailUrl: suggestion.image });
+const suggestionSelected = (suggestion: SearchSuggestionProps) => createAction<SearchSuggestion>(SUGGESTION_SELECTED,
+    new SearchSuggestion(suggestion.title, suggestion.description, suggestion.image));
 const suggestFulfilled = (input: SearchSuggestion[]) => createAction(SUGGEST_FULFILLED, input);
 const searchFulfilled = (response: ISearchResults) => createAction(SEARCH_FULFILLED, response);
 
@@ -104,7 +115,7 @@ export const searchReducer = (state: SearchState = SearchState.empty, action: Ac
 const SearchDelay = 300;
 const searchOnInputChangedEpic =
     (action$: ActionsObservable<TypedAction<string>>,
-     store: MiddlewareAPI<SearchState>): Observable<Action> => {
+     store: MiddlewareAPI<SearchState>): Rx.Observable<Action> => {
         return action$
             .ofType(INPUT_CHANGED)
             .debounceTime(SearchDelay)
@@ -114,7 +125,7 @@ const searchOnInputChangedEpic =
 const SuggestDelay = 100;
 const suggestOnInputChangedEpic =
     (action$: ActionsObservable<TypedAction<string>>,
-     store: MiddlewareAPI<SearchState>): Observable<Action> => {
+     store: MiddlewareAPI<SearchState>): Rx.Observable<Action> => {
         return action$
             .ofType(INPUT_CHANGED)
             .debounceTime(SuggestDelay)
@@ -123,7 +134,7 @@ const suggestOnInputChangedEpic =
 
 const changeInputOnSuggestionSelectedEpic =
     (action$: ActionsObservable<TypedAction<SearchSuggestion>>,
-     store: MiddlewareAPI<SearchState>): Observable<Action> => {
+     store: MiddlewareAPI<SearchState>): Rx.Observable<Action> => {
         return action$
             .ofType(SUGGESTION_SELECTED)
             .map(s => s.payload.title)
@@ -132,30 +143,44 @@ const changeInputOnSuggestionSelectedEpic =
 
 const searchEpic =
     (action$: ActionsObservable<TypedAction<string>>,
-     store: MiddlewareAPI<SearchState>, services: IServices): Observable<Action> => {
+     store: MiddlewareAPI<SearchState>, services: IServices): Rx.Observable<Action> => {
         return action$
             .ofType(SEARCH)
             .map(a => a.payload)
             .distinctUntilChanged()
-            .switchMap(input => services.wikipedia.pageContent(input).catch((error: Error) => {
-                console.log("search caught error " + error);
-                return Observable.of<ISearchResults>(new ErrorResult(error.message));
-            }))
+            .switchMap(input =>
+                services.wikipedia.pageContent(input)
+                    .map(p => new ContentResult(p))
+                    .catch((error: Error) => {
+                        console.log("search caught error " + error);
+                        return Rx.Observable.of<ISearchResults>(new ErrorResult(error.message));
+                    }))
             .map(searchFulfilled);
     };
 
 const suggestEpic =
     (action$: ActionsObservable<TypedAction<string>>,
      store: MiddlewareAPI<SearchState>,
-     services: IServices): Observable<Action> => {
+     services: IServices): Rx.Observable<Action> => {
         return action$
             .ofType(SUGGEST)
             .map(a => a.payload)
             .distinctUntilChanged()
-            .switchMap(input => services.wikipedia.pages(input).catch((error: Error) => {
-                console.log("suggest caught error " + error);
-                return Observable.of<SearchSuggestion[]>([]);
-            }))
+            .switchMap(input =>
+                services.wikipedia.pages(input)
+                    .map(pages => pages.map(p => {
+                        let suggestion =  new SearchSuggestion(p.title);
+                        if (p.terms != null && p.terms.description.length > 0) {
+                            suggestion = suggestion.withDescription(p.terms.description[0]);
+                        }
+                        if (p.thumbnail != null) {
+                            suggestion = suggestion.withThumbnailUrl(p.thumbnail.source);
+                        }
+                        return suggestion;
+                    })).catch((error: Error) => {
+                        console.log("suggest caught error " + error);
+                        return Rx.Observable.of<SearchSuggestion[]>([]);
+                    }))
             .map(suggestFulfilled);
     };
 
@@ -177,7 +202,7 @@ const mapStateToProps: MapStateToProps<SearchStateProps, any> = (state: AppState
 };
 
 const mapDispatchToProps: MapDispatchToPropsFunction<SearchDispatchProps, any> = (dispatch: Dispatch<any>, ownProps: any) => {
-    return bindActionCreators({ inputChanged, suggestionSelected}, dispatch);
+    return bindActionCreators({ inputChanged, suggestionSelected }, dispatch);
 };
 
 // Component declaration

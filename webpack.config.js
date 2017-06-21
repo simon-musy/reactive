@@ -38,14 +38,14 @@ module.exports = {
     // A list of webpack plugins, which customize the build process in various ways
     // https://webpack.js.org/configuration/plugins/#plugins
     plugins: [
-         // Emit module paths instead of numeric IDs 
+        // Emit module paths instead of numeric IDs 
         // https://survivejs.com/webpack/appendices/hmr/#making-the-module-ids-more-debuggable  
         new webpack.NamedModulesPlugin(),
 
         // Hot module reload plugin (HMR)
         // https://survivejs.com/webpack/appendices/hmr/#enabling-hmr
         new webpack.HotModuleReplacementPlugin(),
-       
+
         // Html webpack plugins generates an HTML entry point to the application
         new HtmlWebpackPlugin({
             // Title of generated entry page
@@ -56,7 +56,7 @@ module.exports = {
         }),
 
         // Issue OS notifications upon webpack build
-       new WebpackNotifierPlugin({ alwaysNotify: true })
+        new WebpackNotifierPlugin({ alwaysNotify: true })
     ],
 
     // Change how modules are resolved
@@ -70,14 +70,14 @@ module.exports = {
 
         // Necessary to support tsconfig.json baseUrl parameter: 
         // https://github.com/s-panferov/awesome-typescript-loader#advanced-path-resolution-in-typescript-20
-        plugins : [
+        plugins: [
             new TsConfigPathsPlugin({
                 tsconfig: path.resolve(__dirname, '/tsconfig.json'),
                 compiler: 'typescript'
             })
         ]
     },
-     module: {
+    module: {
         loaders: [
             // All files with a '.ts' or '.tsx' extension will be handled by 'awesome-typescript-loader'.
             {
@@ -95,6 +95,16 @@ module.exports = {
                 test: /\.js$/,
                 loader: 'source-map-loader'
             },
+            // Css modules will be loader by 'css-loader'
+            {
+                test: /\.css$/,
+                use: ['style-loader', 'css-loader']
+            },
+            // Other content is loader by url-loader
+            {
+                test: /\.(png|woff|woff2|eot|ttf|svg)$/,
+                use: ['url-loader']
+            }
         ]
     },
 

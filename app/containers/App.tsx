@@ -6,9 +6,9 @@ import { SearchContainer, searchReducer, searchEpics } from "./search";
 import WikipediaService from "services/wikipedia";
 import { configureStore } from "../configure-store";
 
-const store = configureStore<any>(Redux.combineReducers({
-    search: searchReducer
-}), ReduxObservable.combineEpics<any>(searchEpics),
+const store = configureStore<any>(
+    Redux.combineReducers({search: searchReducer}), 
+    ReduxObservable.combineEpics<any>(searchEpics),
     { wikipedia: new WikipediaService() });
 
 const App = () =>

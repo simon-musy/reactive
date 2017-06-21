@@ -1,4 +1,4 @@
-import { Observable } from "rxjs/Rx";
+import * as Rx from "rxjs";
 import {Http} from "utils/http-helpers";
 
 export interface Thumbnail {
@@ -8,19 +8,23 @@ export interface Thumbnail {
 }
 
 export interface Terms {
-    description: string;
+    description: string[];
 }
 
 export interface Page {
-    id: number;
+    pageid: number;
     title: string;
-    thumbnail: Thumbnail;
-    terms: Terms[];
-    extract: string;
+    thumbnail?: Thumbnail;
+    terms?: Terms;
+    extract?: string;
+}
+
+interface Query {
+    pages: Page[];
 }
 
 interface PagesResponse {
-    query: Page[];
+    query: Query;
 }
 
 interface PagesRequest {
@@ -33,44 +37,48 @@ interface PagesRequest {
     prop: string;
     titles?: string;
     piprop?: string;
-    piphtumbsize?: number;
+    pithumbsize?: number;
     pilimit?: number;
     redirects: boolean;
     wbptterms?: string;
+    origin: string;
 }
 
 export interface IWikipediaService {
-    pages(searchTerm: string): Observable<Page[]>;
-    pageContent(searchTerm: string): Observable<string>;
+    pages(searchTerm: string): Rx.Observable<Page[]>;
+    pageContent(searchTerm: string): Rx.Observable<string>;
 }
 
 export default class WikipediaService implements IWikipediaService {
     private url: string = "https://en.wikipedia.org/w/api.php";
 
-    public pages(searchTerm: string): Observable<Page[]> {
+    public pages(searchTerm: string): Rx.Observable<Page[]> {
         return Http.getJson<PagesRequest, PagesResponse>(this.url, 
         {
             action: "query",
             formatversion: 2,
+            format: "json",
             generator: "prefixsearch",
             gpssearch: searchTerm,
             gpslimit: 10,
             prop: "pageimages|pageterms",
             piprop: "thumbnail",
-            piphtumbsize: 50,
+            pithumbsize: 50,
             pilimit: 10,
             redirects: true,
-            wbptterms: "description"
-         }).map(r => r.query);
+            wbptterms: "description",
+            origin: "*"
+         }).map(r => r.query.pages);
     }
 
-    public pageContent(searchTerm: string): Observable<string> {
+    public pageContent(searchTerm: string): Rx.Observable<string> {
         return Http.getJson<PagesRequest, PagesResponse>(this.url, {
             action: "query",
-            format: "xml",
+            format: "json",
             prop: "extracts",
             titles: searchTerm,
-            redirects: true
-        }).map(r => r.query[0].extract);
+            redirects: true,
+            origin: "*"
+        }).map(r => r.query.pages[0].extract);
     }
 }

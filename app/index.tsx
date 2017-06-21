@@ -3,7 +3,7 @@ import * as React from "react";
 import * as ReactDOM from "react-dom";
 
 // Import semantic UI CSS
-import styles = require("semantic-ui-css/semantic.min.css");
+const styles = require("semantic-ui-css/semantic.min.css");
 
 // Import the Hot Module Reloading App Container
 import { AppContainer } from "react-hot-loader";
