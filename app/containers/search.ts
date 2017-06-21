@@ -11,8 +11,8 @@ import { ComponentClass } from "@types/react";
 export class SearchSuggestion {
 
     public constructor(public readonly title: string,
-        public readonly description: string = "",
-        public readonly thumbnailUrl: string = "") {
+                       public readonly description: string = "",
+                       public readonly thumbnailUrl: string = "") {
 
     }
 
@@ -62,9 +62,9 @@ export class SearchState {
     public static empty: SearchState = new SearchState("", [], EmptyResult.Instance, false);
 
     public constructor(public readonly input: string,
-        public readonly suggestions: SearchSuggestion[],
-        public readonly searchResults: ISearchResults,
-        public readonly loading: boolean) {
+                       public readonly suggestions: SearchSuggestion[],
+                       public readonly searchResults: ISearchResults,
+                       public readonly loading: boolean) {
     }
 
     public withInput(input: string): SearchState {
@@ -184,7 +184,7 @@ const suggestEpic =
             .map(suggestFulfilled);
     };
 
-export const searchEpics = combineEpics(searchOnInputChangedEpic, suggestOnInputChangedEpic, searchEpic, suggestEpic);
+export const searchEpics = combineEpics<any>(searchOnInputChangedEpic, suggestOnInputChangedEpic, searchEpic, suggestEpic, changeInputOnSuggestionSelectedEpic);
 
 // Redux selectors: any time the store is updated, mapStateToProps will be called. 
 // The results of mapStateToProps must be a plain object, which will be merged into the component’s props.

@@ -42,6 +42,7 @@ export class SearchInput extends React.Component<SearchProps, any> {
                 value={this.props.input}
                 open={this.props.menuOpen}
                 showNoResults={true}
+                fluid={true}
             />
         );
     }

@@ -19,12 +19,25 @@ export interface Page {
     extract?: string;
 }
 
-interface Query {
+interface PageInfoQuery {
     pages: Page[];
 }
 
-interface PagesResponse {
-    query: Query;
+interface PagesInfoResponse {
+    query: PageInfoQuery;
+}
+
+interface PagesContent {
+    [key: string]: Page;
+}
+
+interface PageContentQuery {
+    // tslint:disable-next-line:ban-types
+    pages: PagesContent;
+}
+
+interface PageContentResponse {
+    query: PageContentQuery;
 }
 
 interface PagesRequest {
@@ -50,10 +63,12 @@ export interface IWikipediaService {
 }
 
 export default class WikipediaService implements IWikipediaService {
+    private static readonly EmptyResults = "empty results";
+
     private url: string = "https://en.wikipedia.org/w/api.php";
 
     public pages(searchTerm: string): Rx.Observable<Page[]> {
-        return Http.getJson<PagesRequest, PagesResponse>(this.url, 
+        return Http.getJson<PagesRequest, PagesInfoResponse>(this.url, 
         {
             action: "query",
             formatversion: 2,
@@ -72,13 +87,21 @@ export default class WikipediaService implements IWikipediaService {
     }
 
     public pageContent(searchTerm: string): Rx.Observable<string> {
-        return Http.getJson<PagesRequest, PagesResponse>(this.url, {
+        return Http.getJson<PagesRequest, PageContentResponse>(this.url, {
             action: "query",
             format: "json",
             prop: "extracts",
             titles: searchTerm,
             redirects: true,
             origin: "*"
-        }).map(r => r.query.pages[0].extract);
+        }).map(r => {
+        const pageIds = Object.keys(r.query.pages);
+        if (pageIds.length > 0) {
+            const page = r.query.pages[pageIds[0]];
+            return page.extract == null ? WikipediaService.EmptyResults : page.extract;
+        } else {
+            return WikipediaService.EmptyResults;
+        }
+    });
     }
 }
