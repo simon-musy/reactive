@@ -27,37 +27,21 @@ export class SearchSuggestion {
     }
 }
 
-export interface ISearchResults {
-    content: string;
-    error: string;
-    hasError(): boolean;
-    hasContent(): boolean;
-    isEmpty(): boolean;
-}
+export type SearchResult = ContentResult | ErrorResult | EmptyResult;
 
-export class ContentResult implements ISearchResults {
-    public error: string = "";
+export class ContentResult {
+    public kind: "content";
     public constructor(public readonly content: string) { }
-    public hasError() { return false; }
-    public hasContent() { return true; }
-    public isEmpty() { return false; }
 }
 
-export class ErrorResult implements ISearchResults {
-    public content: string = "";
+export class ErrorResult {
+    public kind: "error";
     public constructor(public readonly error: string) { }
-    public hasError() { return true; }
-    public hasContent() { return true; }
-    public isEmpty() { return false; }
 }
 
-export class EmptyResult implements ISearchResults {
+export class EmptyResult {
     public static Instance = new EmptyResult();
-    public content = "";
-    public error = "";
-    public hasError() { return false; }
-    public hasContent() { return false; }
-    public isEmpty() { return true; }
+    public kind: "empty";
 }
 
 export class SearchState {
@@ -65,19 +49,19 @@ export class SearchState {
 
     public constructor(public readonly input: string,
                        public readonly suggestions: SearchSuggestion[],
-                       public readonly searchResults: ISearchResults,
+                       public readonly searchResult: SearchResult,
                        public readonly loading: boolean) {
     }
 
     public withInput(input: string): SearchState {
-        return new SearchState(input, this.suggestions, this.searchResults, true);
+        return new SearchState(input, this.suggestions, this.searchResult, true);
     }
 
     public withSuggestions(suggestions: SearchSuggestion[]): SearchState {
-        return new SearchState(this.input, suggestions, this.searchResults, false);
+        return new SearchState(this.input, suggestions, this.searchResult, false);
     }
 
-    public withSearchResults(results: ISearchResults): SearchState {
+    public withSearchResults(results: SearchResult): SearchState {
         return new SearchState(this.input, this.suggestions, results, this.loading);
     }
 }
@@ -97,7 +81,7 @@ const suggest = (input: string) => createAction(SUGGEST, input);
 const suggestionSelected = (suggestion: SearchSuggestionProps) => createAction<SearchSuggestion>(SUGGESTION_SELECTED,
     new SearchSuggestion(suggestion.title, suggestion.description, suggestion.image));
 const suggestFulfilled = (input: SearchSuggestion[]) => createAction(SUGGEST_FULFILLED, input);
-const searchFulfilled = (response: ISearchResults) => createAction(SEARCH_FULFILLED, response);
+const searchFulfilled = (response: SearchResult) => createAction(SEARCH_FULFILLED, response);
 
 // Reducer
 export const searchReducer = (state: SearchState = SearchState.empty, action: Action): SearchState => {
@@ -105,7 +89,7 @@ export const searchReducer = (state: SearchState = SearchState.empty, action: Ac
         case INPUT_CHANGED:
             return state.withInput((action as TypedAction<string>).payload);
         case SEARCH_FULFILLED:
-            return state.withSearchResults((action as TypedAction<ISearchResults>).payload);
+            return state.withSearchResults((action as TypedAction<SearchResult>).payload);
         case SUGGEST_FULFILLED:
             return state.withSuggestions((action as TypedAction<SearchSuggestion[]>).payload);
         default:
@@ -155,7 +139,7 @@ const searchEpic =
                     .map(p => new ContentResult(p))
                     .catch((error: Error) => {
                         console.log("search caught error " + error);
-                        return Rx.Observable.of<ISearchResults>(new ErrorResult(error.message));
+                        return Rx.Observable.of<SearchResult>(new ErrorResult(error.message));
                     }))
             .map(searchFulfilled);
     };
@@ -199,7 +183,7 @@ const mapStateToProps: MapStateToProps<SearchStateProps, any> = (state: AppState
             return suggestion;
         }),
         input: state.search.input,
-        error: state.search.searchResults.error,
+        error: (state.search.searchResult instanceof ErrorResult) ? state.search.searchResult.error : "",
         loading: state.search.loading,
         menuOpen: state.search.suggestions.length > 0
     };
