@@ -4,9 +4,11 @@ import { connect, MapStateToProps, MapDispatchToProps, Dispatch, ComponentDecora
 import { Action, MiddlewareAPI, bindActionCreators } from "redux";
 import { ActionsObservable, combineEpics } from "redux-observable";
 import * as Rx from "rxjs";
+import * as Lo from "lodash";
 import { IServices } from "services/services";
 import { createAction, TypedAction } from "utils/redux-observable-helpers";
 import { ComponentClass } from "@types/react";
+import { Page } from "services/wikipedia";
 
 export class SearchSuggestion {
 
@@ -168,21 +170,23 @@ const suggestEpic =
             .distinctUntilChanged()
             .switchMap(input =>
                 services.wikipedia.pages(input)
-                    .map(pages => pages.map(p => {
-                        let suggestion =  new SearchSuggestion(p.title);
-                        if (p.terms != null && p.terms.description.length > 0) {
-                            suggestion = suggestion.withDescription(p.terms.description[0]);
-                        }
-                        if (p.thumbnail != null) {
-                            suggestion = suggestion.withThumbnailUrl(p.thumbnail.source);
-                        }
-                        return suggestion;
-                    })).catch((error: Error) => {
+                    .map(pages => pages.map(createPageSuggestion)).catch((error: Error) => {
                         console.log("suggest caught error " + error);
                         return Rx.Observable.of<SearchSuggestion[]>([]);
                     }))
             .map(suggestFulfilled);
     };
+
+function createPageSuggestion(page: Page): SearchSuggestion {
+    let suggestion = new SearchSuggestion(page.title);
+    if (page.terms && page.terms.description.length > 0) {
+        suggestion = suggestion.withDescription(page.terms.description[0]);
+    }
+    if (page.thumbnail) {
+        suggestion = suggestion.withThumbnailUrl(page.thumbnail.source);
+    }
+    return suggestion;
+}
 
 export const searchEpics = combineEpics<any>(searchOnInputChangedEpic, suggestOnInputChangedEpic, searchEpic, suggestEpic, changeInputOnSuggestionSelectedEpic);
 

@@ -1,5 +1,5 @@
 import * as Rx from "rxjs";
-import {Http} from "utils/http-helpers";
+import { Http } from "utils/http-helpers";
 
 export interface Thumbnail {
     source: string;
@@ -68,22 +68,22 @@ export default class WikipediaService implements IWikipediaService {
     private url: string = "https://en.wikipedia.org/w/api.php";
 
     public pages(searchTerm: string): Rx.Observable<Page[]> {
-        return Http.getJson<PagesRequest, PagesInfoResponse>(this.url, 
-        {
-            action: "query",
-            formatversion: 2,
-            format: "json",
-            generator: "prefixsearch",
-            gpssearch: searchTerm,
-            gpslimit: 10,
-            prop: "pageimages|pageterms",
-            piprop: "thumbnail",
-            pithumbsize: 50,
-            pilimit: 10,
-            redirects: true,
-            wbptterms: "description",
-            origin: "*"
-         }).map(r => r.query.pages);
+        return Http.getJson<PagesRequest, PagesInfoResponse>(this.url,
+            {
+                action: "query",
+                formatversion: 2,
+                format: "json",
+                generator: "prefixsearch",
+                gpssearch: searchTerm,
+                gpslimit: 10,
+                prop: "pageimages|pageterms",
+                piprop: "thumbnail",
+                pithumbsize: 50,
+                pilimit: 10,
+                redirects: true,
+                wbptterms: "description",
+                origin: "*"
+            }).map(r => r.query.pages);
     }
 
     public pageContent(searchTerm: string): Rx.Observable<string> {
@@ -95,13 +95,13 @@ export default class WikipediaService implements IWikipediaService {
             redirects: true,
             origin: "*"
         }).map(r => {
-        const pageIds = Object.keys(r.query.pages);
-        if (pageIds.length > 0) {
-            const page = r.query.pages[pageIds[0]];
-            return page.extract == null ? WikipediaService.EmptyResults : page.extract;
-        } else {
-            return WikipediaService.EmptyResults;
-        }
-    });
+            const pageIds = Object.keys(r.query.pages);
+            if (pageIds.length > 0) {
+                const page = r.query.pages[pageIds[0]];
+                return page.extract == null ? WikipediaService.EmptyResults : page.extract;
+            } else {
+                return WikipediaService.EmptyResults;
+            }
+        });
     }
 }
