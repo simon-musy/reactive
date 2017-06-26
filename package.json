@@ -12,7 +12,7 @@
   "//": "scripts are available with `npm` command, e.g. `npm start`",
   "scripts": {
     "clean": "rimraf dist",
-    "build": "webpack",
+    "build": "webpack --progress --color --display-error-details",
     "start": "webpack-dev-server"
   },
   "main": "./dist/bundle.js",
