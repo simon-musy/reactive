@@ -37,8 +37,9 @@ export class SearchInput extends React.Component<SearchProps, any> {
             <Search loading={this.props.loading}
                 results={this.props.suggestions}
                 onSearchChange={(evt, text) => this.props.inputChanged(text)}
-                onResultSelect={(evt, result) => this.props.suggestionSelected({ 
-                    id: result.id, title: result.title, description: result.description, image: result.image })}
+                onResultSelect={(evt, result) => this.props.suggestionSelected({
+                    id: result.id || 0, title: result.title || "", description: result.description || "", image: result.image || ""
+                })}
                 value={this.props.input}
                 open={this.props.menuOpen}
                 showNoResults={true}
