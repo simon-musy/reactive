@@ -43,7 +43,8 @@ export class SearchInput extends React.Component<SearchProps, any> {
                 </Grid.Row>
                 <Grid.Row centered>
                     <Grid.Column width={10}>
-                        <Search loading={this.props.loading}
+                        <Search 
+                            loading={this.props.loading}
                             input={{ fluid: true }}
                             results={this.props.suggestions}
                             onSearchChange={(evt, text) => this.props.inputChanged(text)}

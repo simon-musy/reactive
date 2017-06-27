@@ -2,7 +2,9 @@ import * as React from "react";
 import * as Redux from "redux";
 import * as ReduxObservable from "redux-observable";
 import * as ReactRedux from "react-redux";
-import { SearchContainer, searchReducer, searchEpics } from "./search";
+import { SearchContainer } from "containers/search/search";
+import { searchReducer} from "containers/search/reducers";
+import { searchEpics } from "containers/search/epics";
 import WikipediaService from "services/wikipedia";
 import { configureStore } from "../configure-store";
 
