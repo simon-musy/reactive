@@ -3,7 +3,7 @@ import { SearchSuggestion, ErrorResult, SearchResult, ContentResult } from "cont
 import { IServices } from "services/services";
 import { SearchState } from "containers/search/state";
 import { ActionsObservable } from "redux-observable";
-import { Actions, InputChangedAction, InputChangedActionType, inputChanged, suggest, SuggestionSelectedAction, SuggestionSelectedActionType, SearchAction, SearchActionType, searchFulfilled, SuggestAction, SuggestActionType, suggestFulfilled } from "containers/search/actions";
+import { Actions, InputChangedAction, InputChangedActionType, inputChanged, suggest, SuggestionSelectedAction, SuggestionSelectedActionType, SearchAction, SearchActionType, searchFulfilled, SuggestAction, SuggestActionType, suggestFulfilled, search } from "containers/search/actions";
 import { MiddlewareAPI } from "redux";
 import * as Rx from "rxjs";
 import { combineEpics } from "redux-observable";
@@ -17,8 +17,9 @@ const searchOnInputChangedEpic =
         return action$
             .actionsOfType<InputChangedAction>(InputChangedActionType)
             .map(a => a.payload)
-            .debounceTime(SearchDelay)
-            .map(inputChanged);
+            .debounceTime(SearchDelay)  // exercice: why debounce needs to be before distinct?
+            .distinctUntilChanged()
+            .map(search);
     };
 
 const SuggestDelay = 100;
@@ -27,8 +28,9 @@ const suggestOnInputChangedEpic =
      store: MiddlewareAPI<SearchState>): Rx.Observable<Actions> => {
         return action$
             .actionsOfType<InputChangedAction>(InputChangedActionType)
-            .debounceTime(SuggestDelay)
             .map(a => a.payload)
+            .debounceTime(SuggestDelay)
+            .distinctUntilChanged()
             .map(suggest);
     };
 
@@ -47,7 +49,6 @@ const searchEpic =
         return action$
             .actionsOfType<SearchAction>(SearchActionType)
             .map(a => a.payload)
-            .distinctUntilChanged()
             .switchMap(input =>
                 services.wikipedia.pageContent(input)
                     .map(p => new ContentResult(p))
@@ -65,7 +66,6 @@ const suggestEpic =
         return action$
             .actionsOfType<SuggestAction>(SuggestActionType)
             .map(a => a.payload)
-            .distinctUntilChanged()
             .switchMap(input =>
                 services.wikipedia.pages(input)
                     .map(pages => pages.map(createPageSuggestion)).catch((error: Error) => {

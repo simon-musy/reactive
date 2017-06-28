@@ -18,6 +18,7 @@
   "main": "./dist/bundle.js",
   "///": "dependencies of the application, use `npm install` to download all",
   "dependencies": {
+    "lodash": "^4.17.4",
     "react": "^15.5.4",
     "react-dom": "^15.5.4",
     "react-redux": "^5.0.5",
@@ -26,7 +27,6 @@
     "redux-logger": "^3.0.6",
     "redux-observable": "^0.14.1",
     "rxjs": "^5.4.0",
-    "lodash":"^4.17.4",
     "semantic-ui-css": "^2.2.10",
     "semantic-ui-react": "^0.68.5"
   },

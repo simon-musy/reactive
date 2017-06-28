@@ -1,7 +1,7 @@
 import {createAction} from "utils/redux-observable-helpers";
 import {SearchSuggestion, SearchResult} from "containers/search/state";
 import {TypedAction} from "utils/redux-observable-helpers";
-import { SearchSuggestionProps } from "components/search-input";
+import { SearchSuggestionProps } from "components/search-page";
 
 // Action names
 export const InputChangedActionType = "INPUT_CHANGED";

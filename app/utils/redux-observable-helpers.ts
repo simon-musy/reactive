@@ -1,7 +1,8 @@
 import {MapStateToProps} from "react-redux";
 import {Action, MiddlewareAPI} from "redux";
 import { ActionsObservable } from "redux-observable";
-import {Observable} from "rxjs/observable";
+import { Observable } from "rxjs/observable";
+import "rxjs/add/operator/map";
 
 export interface TypedAction<T, P> extends Action {
     readonly type: T;

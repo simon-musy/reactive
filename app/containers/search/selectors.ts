@@ -1,25 +1,29 @@
 // Redux selectors: any time the store is updated, mapStateToProps will be called. 
 // The results of mapStateToProps must be a plain object, which will be merged into the component’s props.
 import { MapStateToProps, MapDispatchToPropsFunction } from "@types/react-redux";
-import { SearchStateProps, SearchSuggestionProps, SearchDispatchProps } from "components/search-input";
+import { SearchPageStateProps, SearchSuggestionProps, SearchPageDispatchProps } from "components/search-page";
 import { AppState } from "app-state";
-import { ErrorResult } from "containers/search/state";
+import { ErrorResult, ContentResult } from "containers/search/state";
 import { Dispatch, bindActionCreators } from "redux";
 import { inputChanged, suggestionSelected } from "containers/search/actions";
 
-export const mapStateToProps: MapStateToProps<SearchStateProps, any> = (state: AppState, ownProps: any) => {
+export const mapStateToProps: MapStateToProps<SearchPageStateProps, any> = (state: AppState, ownProps: any) => {
+    const result = state.search.searchResult;
     return {
         suggestions: state.search.suggestions.map((s, idx) => {
             const suggestion: SearchSuggestionProps = { id: idx, title: s.title, description: s.description, image: s.thumbnailUrl };
             return suggestion;
         }),
+        suggestionsLoading: state.search.suggestionsLoading,
         input: state.search.input,
-        error: (state.search.searchResult instanceof ErrorResult) ? state.search.searchResult.error : "",
+        error: (result instanceof ErrorResult) ? result.error : "",
         loading: state.search.loading,
-        menuOpen: state.search.suggestions.length > 0
+        hasContent: (result instanceof ContentResult),
+        content: (result instanceof ContentResult) ? result.content : "",
+        menuOpen: state.search.menuOpen
     };
 };
 
-export const mapDispatchToProps: MapDispatchToPropsFunction<SearchDispatchProps, any> = (dispatch: Dispatch<any>, ownProps: any) => {
+export const mapDispatchToProps: MapDispatchToPropsFunction<SearchPageDispatchProps, any> = (dispatch: Dispatch<any>, ownProps: any) => {
     return bindActionCreators({ inputChanged, suggestionSelected }, dispatch);
 };
