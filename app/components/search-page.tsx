@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Search, Segment, Container, Header, Image, Grid, SearchResultProps, Icon } from "semantic-ui-react";
+import { Search, Segment, Container, Header, Image, Grid, SearchResultProps, Icon, Menu, MenuItem } from "semantic-ui-react";
 
 export interface SearchSuggestionProps {
     readonly id: number;
@@ -42,38 +42,42 @@ export class SearchInput extends React.Component<SearchPageProps, any> {
 
     public render() {
         return (
-            <Grid>
-                <Grid.Column width={16}>
-                    <Grid.Row centered style={{ marginTop: 20 }}>
-                        <Grid.Column>
-                            <Image src="https://upload.wikimedia.org/wikipedia/en/8/80/Wikipedia-logo-v2.svg" centered size="small" />
-                        </Grid.Column>
-                    </Grid.Row>
-                    <Grid.Row>
-                        <Container style={{ marginTop: 10 }}>
-                            <Search
-                                loading={this.props.suggestionsLoading}
-                                input={{ fluid: true }}
-                                results={this.props.suggestions}
-                                onSearchChange={(evt, text) => this.props.inputChanged(text)}
-                                onResultSelect={(evt, result) => this.props.suggestionSelected({
-                                    id: result.id || 0, title: result.title || "", description: result.description || "", image: result.image || ""
-                                })}
-                                value={this.props.input}
-                                open={this.props.menuOpen}
-                                icon="wikipedia"
-                                showNoResults
-                                fluid
-                            />
-                        </Container>
-                    </Grid.Row>
-                    <Grid.Row>
-                        <Segment loading={this.props.loading} basic style={{ marginTop: 20 }}>
-                            <Container>{this.props.hasContent ? <div dangerouslySetInnerHTML={createMarkup(this.props.content)} /> : ""}</Container>
-                        </Segment>
-                    </Grid.Row>
-                </Grid.Column>
-            </Grid>
+            <div>
+                <Menu fixed="top" borderless>
+                    <Menu.Item>
+                        <Grid>
+                            <Grid.Row centered>
+                                <Grid.Column>
+                                    <Image src="https://upload.wikimedia.org/wikipedia/en/8/80/Wikipedia-logo-v2.svg" centered size="tiny" />
+                                </Grid.Column>
+                            </Grid.Row>
+                            <Grid.Row>
+                                <Container>
+                                    <Search
+                                        loading={this.props.suggestionsLoading}
+                                        input={{ fluid: true }}
+                                        results={this.props.suggestions}
+                                        onSearchChange={(evt, text) => this.props.inputChanged(text)}
+                                        onResultSelect={(evt, result) => this.props.suggestionSelected({
+                                            id: result.id || 0, title: result.title || "", description: result.description || "", image: result.image || ""
+                                        })}
+                                        value={this.props.input}
+                                        open={this.props.menuOpen}
+                                        icon="wikipedia"
+                                        showNoResults
+                                        fluid
+                                    />
+                                </Container>
+                            </Grid.Row>
+                        </Grid>
+                    </Menu.Item>
+                </Menu>
+                <Container style={{ marginTop: 160}}>
+                    <Segment loading={this.props.loading} basic style={{ marginTop: 20 }}>
+                        <Container>{this.props.hasContent ? <div dangerouslySetInnerHTML={createMarkup(this.props.content)} /> : ""}</Container>
+                    </Segment>
+                </Container>
+            </div>
         );
     }
 }
