@@ -5,7 +5,7 @@ import { SearchPageStateProps, SearchSuggestionProps, SearchPageDispatchProps } 
 import { AppState } from "app-state";
 import { ErrorResult, ContentResult } from "containers/search/state";
 import { Dispatch, bindActionCreators } from "redux";
-import { inputChanged, suggestionSelected } from "containers/search/actions";
+import { inputChanged, suggestionSelected, showMenu, hideMenu, blurMenu } from "containers/search/actions";
 
 export const mapStateToProps: MapStateToProps<SearchPageStateProps, any> = (state: AppState, ownProps: any) => {
     const result = state.search.searchResult;
@@ -25,5 +25,5 @@ export const mapStateToProps: MapStateToProps<SearchPageStateProps, any> = (stat
 };
 
 export const mapDispatchToProps: MapDispatchToPropsFunction<SearchPageDispatchProps, any> = (dispatch: Dispatch<any>, ownProps: any) => {
-    return bindActionCreators({ inputChanged, suggestionSelected }, dispatch);
+    return bindActionCreators({ inputChanged, suggestionSelected, onFocus: showMenu, onBlur: blurMenu }, dispatch);
 };

@@ -6,7 +6,7 @@ import { SearchContainer } from "containers/search/search";
 import { searchReducer} from "containers/search/reducers";
 import { searchEpics } from "containers/search/epics";
 import WikipediaService from "services/wikipedia";
-import { configureStore } from "../configure-store";
+import { configureStore } from "configure-store";
 
 const store = configureStore<any>(
     Redux.combineReducers({search: searchReducer}), 
