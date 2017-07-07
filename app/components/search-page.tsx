@@ -1,5 +1,6 @@
 import * as React from "react";
-import { Search, Segment, Container, Header, Image, Grid, SearchResultProps, Icon, Menu, MenuItem } from "semantic-ui-react";
+import * as _ from "lodash";
+import { Search, Segment, Container, Header, Image, Grid, SearchResultProps, Icon, Menu, MenuItem, Message } from "semantic-ui-react";
 
 export interface SearchSuggestionProps {
     readonly id: number;
@@ -52,6 +53,8 @@ export class SearchPage extends React.Component<SearchPageProps, any> {
     }
 
     public render() {
+        const content = this.props.hasContent ?
+            this.renderHtmlContent() : _.isEmpty(this.props.error) ? "" : this.renderErrorMessage();
         return (
             <div>
                 <Menu fixed="top" borderless>
@@ -72,6 +75,7 @@ export class SearchPage extends React.Component<SearchPageProps, any> {
                                 })}
                                 value={this.props.input}
                                 open={this.props.menuOpen}
+
                                 icon="wikipedia"
                                 showNoResults
                                 fluid
@@ -83,12 +87,22 @@ export class SearchPage extends React.Component<SearchPageProps, any> {
                 <Container style={{ marginTop: 100 }}>
                     <Segment basic>
                         <Container style={this.props.loading ? { opacity: 0.3 } : { opacity: 1 }} >
-                            {this.props.hasContent ? 
-                                <div dangerouslySetInnerHTML={createMarkup(this.props.content)} /> : ""}
-                            </Container>
+                            {content}
+                        </Container>
                     </Segment>
                 </Container>
             </div>
         );
+    }
+
+    private renderHtmlContent() {
+        return <div dangerouslySetInnerHTML={createMarkup(this.props.content)} />;
+    }
+
+    private renderErrorMessage() {
+        return <Message error>
+            <Message.Header>An error has occured</Message.Header>
+            <p>{this.props.error}</p>
+        </Message>;
     }
 }

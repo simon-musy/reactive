@@ -1,4 +1,5 @@
-import { InputSetActionType, InputSetAction } from './actions';
+import { EmptyResult } from './state';
+import { InputSetActionType, InputSetAction } from "./actions";
 import { Page } from "services/wikipedia";
 import { SearchSuggestion, ErrorResult, SearchResult, ContentResult } from "containers/search/state";
 import { IServices } from "services/services";
@@ -14,7 +15,7 @@ const ensureImport: any = actionsOfType;
 const SearchDelay = 300;
 const searchOnInputChangedEpic =
     (action$: ActionsObservable<Actions>,
-     store: MiddlewareAPI<SearchState>): Rx.Observable<Actions> => {
+        store: MiddlewareAPI<SearchState>): Rx.Observable<Actions> => {
         return action$
             .actionsOfType<InputChangedAction>(InputChangedActionType)
             .map(a => a.payload)
@@ -26,7 +27,7 @@ const searchOnInputChangedEpic =
 const SuggestDelay = 100;
 const suggestOnInputChangedEpic =
     (action$: ActionsObservable<Actions>,
-     store: MiddlewareAPI<SearchState>): Rx.Observable<Actions> => {
+        store: MiddlewareAPI<SearchState>): Rx.Observable<Actions> => {
         return action$
             .actionsOfType<InputChangedAction>(InputChangedActionType)
             .map(a => a.payload)
@@ -37,7 +38,7 @@ const suggestOnInputChangedEpic =
 
 const searchOnInputSetEpic =
     (action$: ActionsObservable<Actions>,
-     store: MiddlewareAPI<SearchState>): Rx.Observable<Actions> => {
+        store: MiddlewareAPI<SearchState>): Rx.Observable<Actions> => {
         return action$
             .actionsOfType<InputSetAction>(InputSetActionType)
             .map(a => search(a.payload));
@@ -45,7 +46,7 @@ const searchOnInputSetEpic =
 
 const suggestOnInputSetEpic =
     (action$: ActionsObservable<Actions>,
-     store: MiddlewareAPI<SearchState>): Rx.Observable<Actions> => {
+        store: MiddlewareAPI<SearchState>): Rx.Observable<Actions> => {
         return action$
             .actionsOfType<InputSetAction>(InputSetActionType)
             .map(a => suggest(a.payload, true));
@@ -54,7 +55,7 @@ const suggestOnInputSetEpic =
 
 const setInputOnSuggestionSelectedEpic =
     (action$: ActionsObservable<Actions>,
-     store: MiddlewareAPI<SearchState>): Rx.Observable<Actions> => {
+        store: MiddlewareAPI<SearchState>): Rx.Observable<Actions> => {
         return action$
             .actionsOfType<SuggestionSelectedAction>(SuggestionSelectedActionType)
             .map(s => s.payload.title)
@@ -63,24 +64,25 @@ const setInputOnSuggestionSelectedEpic =
 
 const searchEpic =
     (action$: ActionsObservable<Actions>,
-     store: MiddlewareAPI<SearchState>, services: IServices): Rx.Observable<Actions> => {
+        store: MiddlewareAPI<SearchState>, services: IServices): Rx.Observable<Actions> => {
         return action$
             .actionsOfType<SearchAction>(SearchActionType)
             .map(a => a.payload)
             .switchMap(input =>
-                services.wikipedia.pageContent(input)
-                    .map(p => new ContentResult(p))
-                    .catch((error: Error) => {
-                        console.log("search caught error " + error);
-                        return Rx.Observable.of<SearchResult>(new ErrorResult(error.message));
-                    }))
+                input.length > 0 ?
+                    services.wikipedia.pageContent(input)
+                        .map(p => new ContentResult(p))
+                        .catch((error: Error) => {
+                            console.log("search caught error " + error);
+                            return Rx.Observable.of<SearchResult>(new ErrorResult(error.message));
+                        }) : Rx.Observable.of<SearchResult>(EmptyResult.Instance))
             .map(searchFulfilled);
     };
 
 const suggestEpic =
     (action$: ActionsObservable<Actions>,
-     store: MiddlewareAPI<SearchState>,
-     services: IServices): Rx.Observable<Actions> => {
+        store: MiddlewareAPI<SearchState>,
+        services: IServices): Rx.Observable<Actions> => {
         return action$
             .actionsOfType<SuggestAction>(SuggestActionType)
             .map(a => a.payload)
@@ -97,8 +99,8 @@ const suggestEpic =
 
 const blurClosesMenuAfterSelectedEventMenuEpic =
     (action$: ActionsObservable<Actions>,
-     store: MiddlewareAPI<SearchState>,
-     services: IServices): Rx.Observable<Actions> => {
+        store: MiddlewareAPI<SearchState>,
+        services: IServices): Rx.Observable<Actions> => {
         return action$
             .actionsOfType<BlurMenuAction>(BlurMenuActionType)
             .delay(200)

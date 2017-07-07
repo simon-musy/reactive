@@ -15,7 +15,7 @@ export const searchReducer = (state: SearchState = SearchState.empty, action: Ac
         case SearchFulfilledActionType:
             return state.withSearchResults(action.payload).withoutLoading();
         case SuggestFulfilledActionType:
-            const newState =  state.withSuggestions(action.payload.suggestions).withoutSuggestionsLoading();
+            const newState = state.withSuggestions(action.payload.suggestions).withoutSuggestionsLoading();
             return (action.payload.containsAlternatives) ? newState : newState.withMenuOpen(); 
         case ShowMenuActionType:
             return _.isEmpty(state.suggestions) ? state : state.withMenuOpen();
