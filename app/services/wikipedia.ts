@@ -62,7 +62,7 @@ export interface IWikipediaService {
     pageContent(searchTerm: string): Rx.Observable<string>;
 }
 
-export default class WikipediaService implements IWikipediaService {
+export class WikipediaService implements IWikipediaService {
     private static readonly EmptyResults = "empty results";
 
     private url: string = "https://en.wikipedia.org/w/api.php";

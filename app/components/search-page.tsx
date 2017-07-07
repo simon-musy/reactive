@@ -75,7 +75,6 @@ export class SearchPage extends React.Component<SearchPageProps, any> {
                                 })}
                                 value={this.props.input}
                                 open={this.props.menuOpen}
-
                                 icon="wikipedia"
                                 showNoResults
                                 fluid
