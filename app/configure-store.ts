@@ -11,7 +11,7 @@ export function configureStore<S>(rootReducer: Reducer<S>, rootEpic: Epic<Action
     if (module.hot) {
         // Enable Webpack hot module replacement for reducers
         module.hot.accept("reducers", () => {
-            const nextRootReducer = require("reducers");
+            const nextRootReducer = require("reducers") as Reducer<any>;
             store.replaceReducer(nextRootReducer);
         });
     }

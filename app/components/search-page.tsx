@@ -34,12 +34,21 @@ function createMarkup(html: string) {
 }
 
 
-export class SearchInput extends React.Component<SearchPageProps, any> {
+export class SearchPage extends React.Component<SearchPageProps, any> {
     public props: SearchPageProps;
 
     constructor(props: SearchPageProps) {
         super(props);
         this.props = props;
+    }
+
+    public componentWillMount() {
+        // prevent unwanted scroll due to top-margin for menu overlap
+        document.body.style.height = "80%";
+    }
+
+    public componentWillUnmount() {
+        document.body.style.height = null;
     }
 
     public render() {
@@ -66,14 +75,17 @@ export class SearchInput extends React.Component<SearchPageProps, any> {
                                 icon="wikipedia"
                                 showNoResults
                                 fluid
-                                style={{minWidth: 200}}
+                                style={{ minWidth: 200 }}
                             />
                         </Container>
                     </Menu.Item>
                 </Menu>
                 <Container style={{ marginTop: 100 }}>
-                    <Segment loading={this.props.loading} basic>
-                        <Container>{this.props.hasContent ? <div dangerouslySetInnerHTML={createMarkup(this.props.content)} /> : ""}</Container>
+                    <Segment basic>
+                        <Container style={this.props.loading ? { opacity: 0.3 } : { opacity: 1 }} >
+                            {this.props.hasContent ? 
+                                <div dangerouslySetInnerHTML={createMarkup(this.props.content)} /> : ""}
+                            </Container>
                     </Segment>
                 </Container>
             </div>
