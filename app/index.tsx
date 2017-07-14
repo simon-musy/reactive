@@ -2,6 +2,7 @@ import * as React from "react";
 import * as ReactDOM from "react-dom";
 import * as ReactRedux from "react-redux";
 
+
 // Import semantic UI CSS
 const styles = require("semantic-ui-css/semantic.min.css");
 
@@ -20,7 +21,7 @@ const store = configureStore();
 const render = (Component: any) => ReactDOM.render(
   <AppContainer>
     <ReactRedux.Provider store={store}>
-      <App />
+      <App/>
     </ReactRedux.Provider>
   </AppContainer>,
   document.getElementById("app")

@@ -6,15 +6,17 @@ import { IServices } from "services/services";
 import createRootReducer from "reducers";
 import createServices from "services/services";
 import createRootEpic from "epics";
+import { routerMiddleware } from "react-router-redux";
+import { browserHistory } from "browser-history";
 
 export default function configureStore<S>(): Store<S> {
     const rootEpic = createRootEpic();
     const rootReducer = createRootReducer();
     const services = createServices();
     const epicMiddleware = createEpicMiddleware(rootEpic, { dependencies: services });
-    const store = createStore(rootReducer, composeWithDevTools(applyMiddleware(epicMiddleware, logger))) as Store<S>;
+    const store = createStore(rootReducer, composeWithDevTools(applyMiddleware(epicMiddleware, routerMiddleware(browserHistory), logger))) as Store<S>;
 
-    if (module.hot) {        
+    if (module.hot) {
         // enable hot-reload for reducers
         module.hot.accept("reducers", () => {
             const createRootReducer = require<RequireImport>("reducers").default;

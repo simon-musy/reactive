@@ -1,6 +1,6 @@
 import * as React from "react";
 import * as _ from "lodash";
-import { Search, Segment, Container, Header, Image, Grid, SearchResultProps, Icon, Menu, MenuItem, Message } from "semantic-ui-react";
+import { Search, Segment, Container, Header, Image, Grid, SearchProps, SearchResultProps, Icon, Menu, MenuItem, Message } from "semantic-ui-react";
 
 export interface SearchSuggestionProps {
     readonly id: number;
@@ -67,12 +67,15 @@ export class SearchPage extends React.Component<SearchPageProps, any> {
                                 loading={this.props.suggestionsLoading}
                                 input={{ fluid: true }}
                                 results={this.props.suggestions}
-                                onSearchChange={(evt, text) => this.props.inputChanged(text)}
+                                onSearchChange={(evt, props) => this.props.inputChanged(props.value || "")}
                                 onBlur={(evt) => this.props.onBlur()}
                                 onFocus={(evt) => this.props.onFocus()}
-                                onResultSelect={(evt, result) => this.props.suggestionSelected({
-                                    id: result.id || 0, title: result.title || "", description: result.description || "", image: result.image || ""
-                                })}
+                                onResultSelect={(evt, data) => (this.props.suggestionSelected({
+                                    id: data.result.id || 0,
+                                    title: data.result.title || "",
+                                    description: data.result.description || "",
+                                    image: data.result.image || ""
+                                }))}
                                 value={this.props.input}
                                 open={this.props.menuOpen}
                                 icon="wikipedia"

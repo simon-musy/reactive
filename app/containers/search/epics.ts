@@ -1,7 +1,6 @@
-import { EmptyResult } from './state';
 import { InputSetActionType, InputSetAction } from "./actions";
 import { Page } from "services/wikipedia";
-import { SearchSuggestion, ErrorResult, SearchResult, ContentResult } from "containers/search/state";
+import { SearchSuggestion, ErrorResult, EmptyResult, SearchResult, ContentResult } from "containers/search/state";
 import { IServices } from "services/services";
 import { SearchState } from "containers/search/state";
 import { ActionsObservable } from "redux-observable";
@@ -50,7 +49,7 @@ const suggestOnInputSetEpic =
         return action$
             .actionsOfType<InputSetAction>(InputSetActionType)
             .map(a => suggest(a.payload, true));
-    }
+    };
 
 
 const setInputOnSuggestionSelectedEpic =
@@ -104,7 +103,7 @@ const blurClosesMenuAfterSelectedEventMenuEpic =
      services: IServices): Rx.Observable<Actions> => {
         return action$
             .actionsOfType<BlurMenuAction>(BlurMenuActionType)
-            .delay(200)
+            .delay(1000)
             .map(hideMenu);
     };
 
