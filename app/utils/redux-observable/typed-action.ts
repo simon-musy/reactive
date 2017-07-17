@@ -28,3 +28,4 @@ declare module "redux-observable" {
     actionsOfType: typeof actionsOfType;
   }
 }
+

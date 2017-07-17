@@ -13,50 +13,74 @@
   "scripts": {
     "clean": "rimraf dist",
     "build": "webpack --progress --color --display-error-details",
-    "start": "webpack-dev-server"
+    "start": "webpack-dev-server",
+    "test": "jest",
+    "coverage": "jest --coverage"
   },
   "main": "./dist/bundle.js",
+  "jest": {
+    "roots": [
+      "<rootDir>/app"
+    ],
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js"
+    ],
+    "transform": {
+      "^.+\\.(ts|tsx)$": "<rootDir>/node_modules/ts-jest/dist/preprocessor.js"
+    },
+    "moduleDirectories": [
+      "node_modules",
+      "app"
+    ],
+    "testRegex": "(/__tests__/.*|\\.(test|spec))\\.(tsx?|jsx?)$"
+  },
   "///": "dependencies of the application, use `npm install` to download all",
   "dependencies": {
-    "lodash": "4.17.4",
-    "react": "15.6.1",
-    "react-dom": "15.6.1",
-    "react-redux": "5.0.5",
-    "react-router": "4.1.1",
-    "react-router-redux": "5.0.0-alpha.6",
-    "redux": "3.7.1",
-    "redux-devtools-extension": "2.13.2",
-    "redux-logger": "3.0.6",
-    "redux-observable": "0.14.1",
-    "rxjs": "5.4.2",
-    "semantic-ui-css": "2.2.10",
-    "semantic-ui-react": "0.71.0"
+    "lodash": "^4.17.4",
+    "react": "^15.6.1",
+    "react-dom": "^15.6.1",
+    "react-redux": "^5.0.5",
+    "react-router": "^4.1.1",
+    "react-router-redux": "^5.0.0-alpha.6",
+    "redux": "^3.7.1",
+    "redux-devtools-extension": "^2.13.2",
+    "redux-logger": "^3.0.6",
+    "redux-observable": "^0.14.1",
+    "rxjs": "^5.4.2",
+    "semantic-ui-css": "^2.2.10",
+    "semantic-ui-react": "^0.71.0"
   },
   "////": "these dependencies are required for building",
   "devDependencies": {
-    "@types/react": "15.0.35",
-    "@types/react-dom": "15.5.1",
-    "@types/react-redux": "4.4.45",
-    "@types/react-router": "4.0.13",
-    "@types/react-router-redux": "5.0.3",
-    "@types/redux": "3.6.0",
-    "@types/redux-logger": "3.0.0",
-    "@types/webpack-env": "1.13.0",
-    "@types/lodash": "4.14.68",
-    "awesome-typescript-loader": "3.2.1",
-    "css-loader": "0.28.4",
-    "expose-loader": "0.7.3",
-    "file-loader": "0.11.2",
-    "html-webpack-plugin": "2.29.0",
-    "react-hot-loader": "3.0.0-beta.7",
-    "rimraf": "2.6.1",
-    "source-map-loader": "0.2.1",
-    "style-loader": "0.18.2",
-    "tslint": "5.3.2",
-    "typescript": "2.3.3",
-    "url-loader": "0.5.9",
-    "webpack": "2.6.1",
-    "webpack-dev-server": "2.4.5",
-    "webpack-notifier": "1.5.0"
+    "@types/jest": "^20.0.2",
+    "@types/lodash": "^4.14.68",
+    "@types/react": "^15.0.35",
+    "@types/react-dom": "^15.5.1",
+    "@types/react-redux": "^4.4.45",
+    "@types/react-router": "^4.0.13",
+    "@types/react-router-redux": "^5.0.3",
+    "@types/redux": "^3.6.0",
+    "@types/redux-logger": "^3.0.0",
+    "@types/webpack-env": "^1.13.0",
+    "awesome-typescript-loader": "^3.2.1",
+    "css-loader": "^0.28.4",
+    "expose-loader": "^0.7.3",
+    "file-loader": "^0.11.2",
+    "html-webpack-plugin": "^2.29.0",
+    "jest": "^20.0.4",
+    "react-hot-loader": "^3.0.0-beta.7",
+    "rimraf": "^2.6.1",
+    "source-map-loader": "^0.2.1",
+    "style-loader": "^0.18.2",
+    "ts-jest": "^20.0.7",
+    "tslint": "^5.3.2",
+    "typemoq": "^1.7.0",
+    "typescript": "^2.3.3",
+    "url-loader": "^0.5.9",
+    "webpack": "^2.6.1",
+    "webpack-dev-server": "^2.4.5",
+    "webpack-notifier": "^1.5.0"
   }
 }

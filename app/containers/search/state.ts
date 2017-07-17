@@ -68,7 +68,7 @@ export class SearchState {
     }
 
     public withLoading(): SearchState {
-        return new SearchState(this.input, this.suggestions, this.searchResult, this.suggestionsLoading, true, this.menuOpen)
+        return new SearchState(this.input, this.suggestions, this.searchResult, this.suggestionsLoading, true, this.menuOpen);
     }
 
     public withoutSuggestionsLoading(): SearchState {
@@ -76,7 +76,7 @@ export class SearchState {
     }
 
     public withoutLoading(): SearchState {
-        return new SearchState(this.input, this.suggestions, this.searchResult, this.suggestionsLoading, false, this.menuOpen)
+        return new SearchState(this.input, this.suggestions, this.searchResult, this.suggestionsLoading, false, this.menuOpen);
     }
 
 }

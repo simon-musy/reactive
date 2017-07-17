@@ -8,17 +8,16 @@ import { Actions, InputChangedAction, InputChangedActionType, inputChanged, sugg
 import { MiddlewareAPI } from "redux";
 import * as Rx from "rxjs";
 import { combineEpics } from "redux-observable";
-import { actionsOfType } from "utils/redux-observable-helpers";
+import { actionsOfType } from "utils/redux-observable/typed-action";
 const ensureImport: any = actionsOfType;
 
 const SearchDelay = 300;
-const searchOnInputChangedEpic =
-    (action$: ActionsObservable<Actions>,
-     store: MiddlewareAPI<SearchState>): Rx.Observable<Actions> => {
+export const searchOnInputChangedEpic =
+    (action$: ActionsObservable<Actions>, store: MiddlewareAPI<SearchState>, services: IServices): Rx.Observable<Actions> => {
         return action$
             .actionsOfType<InputChangedAction>(InputChangedActionType)
             .map(a => a.payload)
-            .debounceTime(SearchDelay)  // exercice: why debounce needs to be before distinct?
+            .debounceTime(SearchDelay, services.scheduler)  // exercice: why debounce needs to be before distinct? because if user deletes and re-enters the same input we search for nothing
             .distinctUntilChanged()
             .map(search);
     };
@@ -51,7 +50,6 @@ const suggestOnInputSetEpic =
             .map(a => suggest(a.payload, true));
     };
 
-
 const setInputOnSuggestionSelectedEpic =
     (action$: ActionsObservable<Actions>,
      store: MiddlewareAPI<SearchState>): Rx.Observable<Actions> => {
@@ -61,7 +59,7 @@ const setInputOnSuggestionSelectedEpic =
             .flatMap(s => Rx.Observable.of<Actions>(inputSet(s), hideMenu()));
     };
 
-const searchEpic =
+export const searchEpic =
     (action$: ActionsObservable<Actions>,
      store: MiddlewareAPI<SearchState>, services: IServices): Rx.Observable<Actions> => {
         return action$

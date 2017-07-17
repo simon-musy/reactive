@@ -1,6 +1,5 @@
-import {createAction} from "utils/redux-observable-helpers";
 import {SearchSuggestion, SearchResult} from "containers/search/state";
-import {TypedAction} from "utils/redux-observable-helpers";
+import {TypedAction, createAction} from "utils/redux-observable/typed-action";
 import { SearchSuggestionProps } from "components/search-page";
 
 // Action names

@@ -7,6 +7,7 @@
 		"msjsdiag.debugger-for-chrome",
 		"DSKWRK.vscode-generate-getter-setter",
 		"eg2.vscode-npm-script",
-		"eamodio.gitlens"
+		"eamodio.gitlens",
+		"Orta.vscode-jest"
 	]
 }

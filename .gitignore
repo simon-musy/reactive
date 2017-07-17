@@ -3,4 +3,5 @@ node_modules
 typings
 npm-debug.log
 dist
+coverage
 .vscode/chrome
