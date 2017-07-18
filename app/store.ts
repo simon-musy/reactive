@@ -4,7 +4,7 @@ import logger from "redux-logger";
 import { createEpicMiddleware, Epic } from "redux-observable";
 import { IServices } from "services/services";
 import createRootReducer from "reducers";
-import createServices from "services/services";
+import createServices from "services/services-factory";
 import createRootEpic from "epics";
 import { routerMiddleware } from "react-router-redux";
 import { browserHistory } from "browser-history";
