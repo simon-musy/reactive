@@ -23,13 +23,13 @@ export const searchOnInputChangedEpic =
     };
 
 const SuggestDelay = 200;
-const suggestOnInputChangedEpic =
+export const suggestOnInputChangedEpic =
     (action$: ActionsObservable<Actions>,
-     store: MiddlewareAPI<SearchState>): Rx.Observable<Actions> => {
+     store: MiddlewareAPI<SearchState>, services: IServices): Rx.Observable<Actions> => {
         return action$
             .actionsOfType<InputChangedAction>(InputChangedActionType)
             .map(a => a.payload)
-            .debounceTime(SuggestDelay)
+            .debounceTime(SuggestDelay, services.scheduler)
             .distinctUntilChanged()
             .map(s => suggest(s, false));
     };
@@ -76,7 +76,7 @@ export const searchEpic =
             .map(searchFulfilled);
     };
 
-const suggestEpic =
+export const suggestEpic =
     (action$: ActionsObservable<Actions>,
      store: MiddlewareAPI<SearchState>,
      services: IServices): Rx.Observable<Actions> => {

@@ -1,6 +1,6 @@
-import {ContentResult, SearchState} from "./state";
-import { searchOnInputChangedEpic, searchEpic } from "./epics";
-import {searchFulfilled, inputChanged,  search,  Actions} from "./actions";
+import {ErrorResult, ContentResult,  SearchState} from './state';
+import { searchOnInputChangedEpic, searchEpic, suggestOnInputChangedEpic } from "./epics";
+import {suggest, searchFulfilled,  inputChanged,   search,   Actions} from './actions';
 import { IServices } from "services/services";
 import { IWikipediaService } from "services/wikipedia";
 import * as Rx from "rxjs";
@@ -15,7 +15,7 @@ describe("/app/containers/search/epics", () => {
     const storeMock = TypeMoq.Mock.ofType<MiddlewareAPI<SearchState>>();
     const store = storeMock.object;
 
-    test("searchOnInputChangedEpic debounces search", () => {
+    test("suggestEpic debounces input", () => {
         // Create test scheduler
         const testScheduler = createTestScheduler();
 
@@ -24,25 +24,62 @@ describe("/app/containers/search/epics", () => {
         servicesMock.setup(m => m.scheduler).returns(() => testScheduler);
         const services = servicesMock.object;
 
-        // Mock input actions stream
+        // Define marbles
         const inputActions = {
             a: inputChanged("r"),
             b: inputChanged("rx"),
             c: inputChanged("rxjs")
         };
-        const action$ = createTestAction$FromMarbles<Actions>(testScheduler,
-            "-ab" + frames(30) + "-c", inputActions);
+        const outputActions = {
+            b: suggest("rx", false),
+            c: suggest("rxjs", false)
+        };
+        const inputMarble =     "-ab---------------------c";
+        const outputMarble =    "----------------------b---------------------c";
+        
+        // Mock input actions stream
+        const action$ = createTestAction$FromMarbles<Actions>(testScheduler, inputMarble, inputActions);
 
         // Apply epic on actions observable
-        const resultingAction$ = searchOnInputChangedEpic(action$, store, services);
+        const outputAction$ = suggestOnInputChangedEpic(action$, store, services);
 
         // Assert on the resulting actions observable
-        const resultActions = {
+        testScheduler.expectObservable(outputAction$).toBe(outputMarble, outputActions);
+
+        // Run test
+        testScheduler.flush();
+    });
+
+    test("searchOnInputChangedEpic debounces input", () => {
+        // Create test scheduler
+        const testScheduler = createTestScheduler();
+
+        // Mock services 
+        const servicesMock = TypeMoq.Mock.ofType<IServices>();
+        servicesMock.setup(m => m.scheduler).returns(() => testScheduler);
+        const services = servicesMock.object;
+
+        // Define marbles
+        const inputActions = {
+            a: inputChanged("r"),
+            b: inputChanged("rx"),
+            c: inputChanged("rxjs")
+        };
+        const outputActions = {
             b: search("rx"),
             c: search("rxjs")
         };
-        testScheduler.expectObservable(resultingAction$).toBe(
-            "--" + frames(30) + "b-" + frames(30) + "c", resultActions);
+        const inputMarble =     "-ab" + frames(30) + "-c";
+        const outputMarble =    "--" + frames(30) + "b-" + frames(30) + "c";
+
+        // Mock input actions stream
+        const action$ = createTestAction$FromMarbles<Actions>(testScheduler, inputMarble, inputActions);
+
+        // Apply epic on actions observable
+        const outputAction$ = searchOnInputChangedEpic(action$, store, services);
+
+        // Assert on the resulting actions observable
+        testScheduler.expectObservable(outputAction$).toBe(outputMarble, outputActions);
 
         // Run test
         testScheduler.flush();
@@ -57,24 +94,26 @@ describe("/app/containers/search/epics", () => {
         servicesMock.setup(m => m.scheduler).returns(() => testScheduler);
         const services = servicesMock.object;
 
-         // Mock input actions stream
+         // Define marbles
         const inputActions = {
             a: inputChanged("r"),
             b: inputChanged("rx"),
             c: inputChanged("rxjs")
         };
-        const action$ = createTestAction$FromMarbles<Actions>(testScheduler,
-            "-ab" + frames(30) + "-cb", inputActions);
-
-        // Apply epic on actions observable
-        const resultingAction$ = searchOnInputChangedEpic(action$, store, services);
-
-        // Assert on the resulting actions observable
-        const resultActions = {
+        const outputActions = {
             b: search("rx")
         };
-        testScheduler.expectObservable(resultingAction$).toBe(
-            "--" + frames(30) + "b-", resultActions);
+        const inputMarble =  "-ab" + frames(30) + "-cb";
+        const outputMarble = "--" + frames(30) + "b-";
+        
+        // Mock input actions stream
+        const action$ = createTestAction$FromMarbles<Actions>(testScheduler, inputMarble, inputActions);
+
+        // Apply epic on actions observable
+        const outputAction$ = searchOnInputChangedEpic(action$, store, services);
+
+        // Assert on the resulting actions observable
+        testScheduler.expectObservable(outputAction$).toBe(outputMarble, outputActions);
 
         // Run test
         testScheduler.flush();
@@ -95,13 +134,40 @@ describe("/app/containers/search/epics", () => {
         const action$ = createTestAction$<Actions>(search(searchInput));
 
         // Apply epic on actions observable
-        const resultingAction$ = searchEpic(action$, store, services);
+        const outputAction$ = searchEpic(action$, store, services);
 
         // Assert on the resulting actions observable   
-        resultingAction$.subscribe(
+        outputAction$.subscribe(
             action => expect(action).toEqual(searchFulfilled(new ContentResult(searchResult))), 
             error => fail(error), 
             done
         );
     });
+
+    test("searchEpic with error", (done) => {
+        const searchInput = "rxjs";
+        const searchError = "Some error";
+       
+        // Mock services 
+        const servicesMock = TypeMoq.Mock.ofType<IServices>();
+        const wikipediaMock = TypeMoq.Mock.ofType<IWikipediaService>();
+        wikipediaMock.setup(m => m.pageContent(searchInput)).returns(() => Rx.Observable.throw(new Error(searchError)));
+        servicesMock.setup(m => m.wikipedia).returns(() => wikipediaMock.object);
+        const services = servicesMock.object;
+
+         // Mock input actions stream
+        const action$ = createTestAction$<Actions>(search(searchInput));
+
+        // Apply epic on actions observable
+        const outputAction$ = searchEpic(action$, store, services);
+
+        // Assert on the resulting actions observable   
+        outputAction$.subscribe(
+            action => expect(action).toEqual(searchFulfilled(new ErrorResult(searchError))), 
+            error => fail(error),
+            done
+        );
+    });
+
+
 });
