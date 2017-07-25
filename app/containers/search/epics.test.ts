@@ -169,5 +169,4 @@ describe("/app/containers/search/epics", () => {
         );
     });
 
-
 });

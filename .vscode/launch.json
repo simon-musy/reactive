@@ -21,6 +21,20 @@
             "sourceMapPathOverrides": {
                 "webpack:///*": "${webRoot}/*"
             }
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Debug Tests",
+            "preLaunchTask": "development",
+            "program": "${workspaceRoot}/node_modules/jest/bin/jest.js",
+            "args": [
+                "--runInBand"
+            ],
+            "sourceMaps": true,
+            "outFiles": [
+                "${workspaceRoot}/output/debug/**/*"
+            ]
         }
     ]
 }
