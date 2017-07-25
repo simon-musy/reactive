@@ -5,31 +5,24 @@ import * as jsc from "jsverify";
 import * as _ from "lodash";
 
 describe("app/containers/search/reducer", () => {
-    // define the various arbitraries for our state, this will allow testing with randomized search states and pinpointing
-    // the problematic cases via shrinking
+    // define the various arbitraries to generate random SearchState data
     const searchSuggestionArb = jsc.array(jsc.string).smap(ss => new SearchSuggestion(ss[0], ss[1], ss[2]), sugg => [sugg.title, sugg.description, sugg.description]);
     const searchSuggestionsArb = jsc.array(searchSuggestionArb);
-    const searchResultArb: jsc.Arbitrary<SearchResult> = (jsc as any).oneof(    // jsc typings are incorrect, see https://github.com/jsverify/jsverify/issues/233
+    const searchResultArb: jsc.Arbitrary<SearchResult> = (jsc as any).oneof(  // jsc typings are incorrect, see https://github.com/jsverify/jsverify/issues/233
         [jsc.string.smap(s => new ContentResult(s), r => r.content),
         jsc.constant(EmptyResult.Instance),
         jsc.string.smap(s => new ErrorResult(s), e => e.error)]);
     const searchStatesGen =
         searchResultArb.generator.flatmap(res =>
             searchSuggestionsArb.generator.flatmap(suggs =>
-                jsc.array(jsc.string).generator.
-                    flatmap(ss => jsc.array(jsc.bool).generator.
-                        flatmap(bb => jsc.array(jsc.number).generator.map(nn =>
+                jsc.array(jsc.string).generator.flatmap(ss => 
+                    jsc.array(jsc.bool).generator.flatmap(bb => 
+                        jsc.array(jsc.number).generator.map(nn =>
                             new SearchState(ss[0], suggs, res, bb[0], bb[1], bb[2]))))));
     const searchStatesArb: jsc.Arbitrary<SearchState> = jsc.bless({
         generator: searchStatesGen,
         shrink: jsc.shrink.noop,
         show: (s: SearchState) => JSON.stringify(s)
-    });
-
-    test("jsverify sanity test", () => {
-        jsc.assertForall(jsc.constant(1), (num) => {
-            return num === 1;
-        });
     });
 
     test("reducer for input changed", () => {
