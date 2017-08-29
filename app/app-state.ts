@@ -1,5 +1,5 @@
-import {SearchState} from "containers/search/state";
+import {TodoState} from "containers/todo/state";
 
 export interface AppState {
-    search: SearchState;
+    todo: TodoState;
 }

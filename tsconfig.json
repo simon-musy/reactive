@@ -12,7 +12,7 @@
         "jsx": "react", // Compile directly jsx to React.createElement function calls (since we are not going through Babel)
         "lib": [
             "dom",
-            "es5",
+            "es6",
             "scripthost",
             "es2015.promise" // Default libraries for building in ES5, plus the additional promise library required by RxJs
         ]
