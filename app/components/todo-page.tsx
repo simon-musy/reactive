@@ -1,6 +1,7 @@
 import * as React from "react";
 import * as _ from "lodash";
 import { Todo } from "../containers/todo/state";
+import { TodoTextInput } from "./todo-text-input";
 
 export interface TodoPageStateProps {
     readonly todos: Todo[];
@@ -8,6 +9,7 @@ export interface TodoPageStateProps {
 
 export interface TodoPageDispatchProps {
     deleteTodo: (id: any) => void;
+    addTodo: (text: string) => void;
 }
 
 export interface TodoPageProps extends TodoPageStateProps, TodoPageDispatchProps {
@@ -30,8 +32,18 @@ export class TodoPage extends React.Component<TodoPageProps, any> {
         console.log(this.props);
         return (
             <div>
+                <TodoTextInput
+                    newTodo
+                    onSave={this.handleSave.bind(this)}
+                    placeholder="What needs to be done?" />
                 {this.props.todos.map(todo => <div key={todo.id}>{todo.text}<button onClick={() => this.props.deleteTodo(todo.id)}>delete</button></div>)}
             </div>
         );
+    }
+
+    private handleSave(text: string) {
+        if (text.length !== 0) {
+            this.props.addTodo(text);
+        }
     }
 }

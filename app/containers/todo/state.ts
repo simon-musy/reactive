@@ -1,5 +1,5 @@
 export class Todo {
-    public id?: number;
+    public id: number;
     public text?: string;
 }
 export class TodoState {
