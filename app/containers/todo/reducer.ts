@@ -9,7 +9,7 @@ export const todoReducer = (state: TodoState = TodoState.debug, action: Actions)
         case AddTodoActionType:
             return {
                 todos: [...state.todos, {
-                    id: Math.max.apply(state.todos.map(t => t.id)),
+                    id: Math.max.apply(null, state.todos.map(t => t.id)) + 1,
                     text: action.payload
                 }]
             };
