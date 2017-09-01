@@ -2,14 +2,17 @@ import * as React from "react";
 import * as _ from "lodash";
 import { Todo } from "../containers/todo/state";
 import { TodoTextInput } from "./todo-text-input";
+import { TodoItem } from "./todo-item";
+import { List } from "semantic-ui-react";
 
 export interface TodoPageStateProps {
     readonly todos: Todo[];
 }
 
 export interface TodoPageDispatchProps {
-    deleteTodo: (id: any) => void;
+    deleteTodo: (id: number) => void;
     addTodo: (text: string) => void;
+    editTodo: (item: Todo) => void;
 }
 
 export interface TodoPageProps extends TodoPageStateProps, TodoPageDispatchProps {
@@ -36,7 +39,14 @@ export class TodoPage extends React.Component<TodoPageProps, any> {
                     newTodo
                     onSave={this.handleSave.bind(this)}
                     placeholder="What needs to be done?" />
-                {this.props.todos.map(todo => <div key={todo.id}>{todo.text}<button onClick={() => this.props.deleteTodo(todo.id)}>delete</button></div>)}
+                <List bulleted>
+                    {this.props.todos.map(todo =>
+                        <TodoItem
+                            key={todo.id}
+                            todo={todo}
+                            editTodo={this.props.editTodo}
+                            deleteTodo={this.props.deleteTodo} />)}
+                </List>
             </div>
         );
     }

@@ -1,11 +1,13 @@
-import * as _ from "lodash";
-import { TodoState } from "containers/todo/state";
-import { Actions, DeleteTodoActionType, AddTodoActionType } from "containers/todo/actions";
+import { assign } from "lodash";
+import { Todo, TodoState } from "./state";
+import { Actions, DeleteTodoActionType, AddTodoActionType, EditTodoActionType } from "containers/todo/actions";
 
 export const todoReducer = (state: TodoState = TodoState.debug, action: Actions): TodoState => {
     switch (action.type) {
+
         case DeleteTodoActionType:
-            return { todos: state.todos.filter(todo => todo.id != action.payload) };
+            return { todos: state.todos.filter(todo => todo.id !== action.payload) };
+
         case AddTodoActionType:
             return {
                 todos: [...state.todos, {
@@ -13,6 +15,12 @@ export const todoReducer = (state: TodoState = TodoState.debug, action: Actions)
                     text: action.payload
                 }]
             };
+
+        case EditTodoActionType:
+            return {
+                todos: state.todos.map(todo => todo.id === action.payload.id ? assign({}, todo, { text: action.payload.text }) : todo)
+            };
+
         default: return state;
     }
 };

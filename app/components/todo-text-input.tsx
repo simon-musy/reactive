@@ -1,4 +1,5 @@
 import * as React from "react";
+import { Input } from "semantic-ui-react";
 
 interface TodoTextInputProps {
     onSave: (text: string) => void;
@@ -21,13 +22,14 @@ export class TodoTextInput extends React.Component<TodoTextInputProps, TodoTextI
 
     public render() {
         return (
-            <input
+            <Input
                 type="text"
                 placeholder={this.props.placeholder}
                 autoFocus={true}
                 value={this.state.text}
                 onChange={this.handleChange.bind(this)}
-                onKeyDown={this.handleSubmit.bind(this)} />
+                onKeyDown={this.handleSubmit.bind(this)}
+                onBlur={this.handleBlur.bind(this)} />
         );
     }
 
@@ -43,5 +45,11 @@ export class TodoTextInput extends React.Component<TodoTextInputProps, TodoTextI
 
     private handleChange(e: any) {
         this.setState({ text: e.target.value });
+    }
+
+    private handleBlur(e: any) {
+        if (!this.props.newTodo) {
+            this.props.onSave(e.target.value);
+        }
     }
 }
