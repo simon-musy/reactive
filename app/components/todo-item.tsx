@@ -1,6 +1,6 @@
 import * as React from "react";
 import { TodoTextInput } from "./todo-text-input";
-import { Todo } from "../containers/todo/state";
+import { Todo, TodoType } from "../containers/todo/state";
 import { Button, Label, ListItem } from "semantic-ui-react";
 
 export interface IProps {
@@ -25,42 +25,51 @@ export class TodoItem extends React.Component<IProps, IState> {
 
     public render() {
         const { todo, deleteTodo } = this.props;
-
         let element;
         if (this.state.editing) {
             element = (
                 <TodoTextInput text={todo.text}
                     editing={this.state.editing}
-                    onSave={(text) => this.handleSave(todo.id, text)} />
+                    onSave={(text) => this.handleSave(todo.id, text, todo.type)} />
             );
         } else {
             element = (
-                <div>
-                    <Label onDoubleClick={this.handleDoubleClick}>
-                        {todo.text}
-                    </Label>
-
-                    <Button size="mini" onClick={() => deleteTodo(todo.id)}>X</Button>
-                </div>
+                <Label size="big" onDoubleClick={this.handleDoubleClick}>
+                    {todo.text}
+                </Label>
             );
         }
 
         return (
             <ListItem>
-                {element}
+                <div>
+                    <Button circular icon={this.todoTypeToIcon(todo.type)} onClick={() => deleteTodo(todo.id)} />
+                    {element}
+                </div>
             </ListItem>
         );
+    }
+
+    private todoTypeToIcon(type: TodoType): string{
+        switch (type) {
+            case TodoType.Task:
+                return "theme";
+            case TodoType.Event:
+                return "unhide";
+            default:
+                return "google";
+        }
     }
 
     private handleDoubleClick() {
         this.setState({ editing: true });
     }
 
-    private handleSave(id: number, text: string) {
+    private handleSave(id: number, text: string, type: TodoType) {
         if (text.length === 0) {
             this.props.deleteTodo(id);
         } else {
-            this.props.editTodo({ id, text });
+            this.props.editTodo({ id, text, type });
         }
         this.setState({ editing: false });
     }

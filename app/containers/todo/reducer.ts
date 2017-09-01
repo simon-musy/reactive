@@ -1,5 +1,5 @@
 import { assign } from "lodash";
-import { Todo, TodoState } from "./state";
+import { Todo, TodoState, TodoType } from "./state";
 import { Actions, DeleteTodoActionType, AddTodoActionType, EditTodoActionType } from "containers/todo/actions";
 
 export const todoReducer = (state: TodoState = TodoState.debug, action: Actions): TodoState => {
@@ -12,7 +12,8 @@ export const todoReducer = (state: TodoState = TodoState.debug, action: Actions)
             return {
                 todos: [...state.todos, {
                     id: Math.max.apply(null, state.todos.map(t => t.id)) + 1,
-                    text: action.payload
+                    text: action.payload,
+                    type: TodoType.Task
                 }]
             };
 

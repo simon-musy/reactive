@@ -39,7 +39,7 @@ export class TodoPage extends React.Component<TodoPageProps, any> {
                     newTodo
                     onSave={this.handleSave.bind(this)}
                     placeholder="What needs to be done?" />
-                <List bulleted>
+                <List>
                     {this.props.todos.map(todo =>
                         <TodoItem
                             key={todo.id}
