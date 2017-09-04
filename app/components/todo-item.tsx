@@ -38,9 +38,9 @@ export class TodoItem extends React.Component<IProps, IState> {
             );
         } else {
             element = (
-                <Label size="big" onDoubleClick={this.handleDoubleClick}>
+                <label onDoubleClick={this.handleDoubleClick}>
                     {todo.text}
-                </Label>
+                </label>
             );
         }
         let typeElement;
@@ -50,7 +50,7 @@ export class TodoItem extends React.Component<IProps, IState> {
         return (
             <ListItem>
                 <div>
-                    <Button circular onClick={() => this.handleTypeClick()}>{todo.type.toString()}</Button>
+                    <button className={"button-image " + todo.type} onClick={() => this.handleTypeClick()}/>
                     {element}
                 </div>
                 {typeElement}

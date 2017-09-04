@@ -1,6 +1,7 @@
 import * as React from "react";
 import { todoTypes } from "../containers/todo/state";
 import { Button } from "semantic-ui-react";
+const styles = require("./todo.css");
 
 interface TodoTypeSelectorProps {
     onSave: (selectedType: string) => void;
@@ -15,12 +16,12 @@ export class TodoTypeSelector extends React.Component<TodoTypeSelectorProps, obj
 
     public render() {
         return (
-            <Button.Group autoFocus={true} onBlur={() => this.props.onBlur()}>
-                {this.getOtherTypes(this.props.currentType).map(type => <Button
+            <div>
+                {this.getOtherTypes(this.props.currentType).map(type => <button
                     key={type}
-                    circular
-                    onClick={() => this.props.onSave(type)}>{type}</Button>)}
-            </Button.Group>
+                    className={"button-image " + type}
+                    onClick={() => this.props.onSave(type)}/>)}
+            </div>
         );
     }
 

@@ -1,6 +1,34 @@
-.foo {
-  color: chocolate;
+.button-image {
+  width: 20px;
+  height: 20px;
+  background-color: transparent;
+  background-repeat: no-repeat;
+  background-position: center; 
+  background-size: cover;
+  border-width: 0;
+  vertical-align: middle;
 }
-.barBaz {
-  color: tomato;
+
+.event{
+  background-image: url("./images/event.svg");
+  background-size: 14px 14px;
+}
+
+.task{
+  background-image: url("./images/task.svg");
+  background-size: 4px 8px;
+}
+
+.task-completed{
+  background-image: url("./images/task-completed.svg");
+  background-size: 16px 16px;
+}
+
+.note{
+  background-image: url("./images/note.svg");
+  background-size: 10px 16px;
+}
+
+label{
+  vertical-align: middle;
 }
