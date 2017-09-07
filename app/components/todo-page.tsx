@@ -4,6 +4,8 @@ import { Todo } from "../containers/todo/state";
 import { TodoTextInput } from "./todo-text-input";
 import { TodoItem } from "./todo-item";
 import { List } from "semantic-ui-react";
+import * as moment from "moment";
+import DatePicker from "react-datepicker";
 
 export interface TodoPageStateProps {
     readonly todos: Todo[];
@@ -29,6 +31,9 @@ export class TodoPage extends React.Component<TodoPageProps, any> {
     constructor(props: TodoPageProps) {
         super(props);
         this.props = props;
+        this.state = {
+            startDate: moment()
+        };
     }
 
     public render() {
@@ -47,8 +52,17 @@ export class TodoPage extends React.Component<TodoPageProps, any> {
                             editTodo={this.props.editTodo}
                             deleteTodo={this.props.deleteTodo} />)}
                 </List>
+                <DatePicker
+                    selected={this.state.startDate}
+                    onChange={this.handleChange.bind(this)}
+                />
             </div>
         );
+    }
+    private handleChange(date: moment.Moment) {
+        this.setState({
+            startDate: date
+        });
     }
 
     private handleSave(text: string) {

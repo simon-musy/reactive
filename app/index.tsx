@@ -6,6 +6,9 @@ import * as ReactRedux from "react-redux";
 // Import semantic UI CSS
 const styles = require("semantic-ui-css/semantic.min.css");
 
+// Import datepicker CSS
+const datepickerStyles = require("react-datepicker/dist/react-datepicker.css");
+
 // Import the Hot Module Reloading App Container
 import { AppContainer } from "react-hot-loader";
 
