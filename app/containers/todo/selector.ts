@@ -7,7 +7,7 @@ import { Dispatch, bindActionCreators } from "redux";
 import { deleteTodoAction, addTodoAction, editTodoAction, editDateAction } from "containers/todo/actions";
 
 export const mapStateToProps: MapStateToProps<TodoPageStateProps, any> = (state: AppState, ownProps: any) => {
-    const pageState = {todos: state.todo.todos, date: state.todo.date};
+    const pageState = {todos: state.todo.todos.filter(t => t.date === state.todo.date), date: state.todo.date};
     console.log(state.todo);
     return pageState;
 };

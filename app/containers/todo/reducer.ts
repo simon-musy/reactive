@@ -15,15 +15,20 @@ export const todoReducer = (state: TodoState = TodoState.debug, action: Actions)
             return {
                 todos: [...state.todos, {
                     id: Math.max.apply(null, state.todos.map(t => t.id)) + 1,
-                    text: action.payload,
-                    type: "task"
+                    text: action.payload.text,
+                    type: action.payload.type,
+                    date: action.payload.date
                 }],
                 date: state.date
             };
 
         case EditTodoActionType:
             return {
-                todos: state.todos.map(todo => todo.id === action.payload.id ? assign({}, todo, { text: action.payload.text, type: action.payload.type }) : todo),
+                todos: state.todos.map(todo => todo.id === action.payload.id ? assign({}, todo, {
+                    text: action.payload.text,
+                    type: action.payload.type,
+                    date: action.payload.date
+                }) : todo),
                 date: state.date
             };
 

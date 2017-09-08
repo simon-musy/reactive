@@ -34,7 +34,7 @@ export class TodoItem extends React.Component<IProps, IState> {
             element = (
                 <TodoTextInput text={todo.text}
                     editing={this.state.editing}
-                    onSave={(text) => this.handleSave(todo.id, text, todo.type)} />
+                    onSave={(text) => this.handleSave(todo.id, text, todo.type, todo.date)} />
             );
         } else {
             element = (
@@ -45,7 +45,7 @@ export class TodoItem extends React.Component<IProps, IState> {
         }
         let typeElement;
         if (this.state.editingType) {
-            typeElement = <TodoTypeSelector currentType={todo.type} onBlur={() => this.handleBlur()} onSave={(type) => this.handleSave(todo.id, todo.text as string, type)} />;
+            typeElement = <TodoTypeSelector currentType={todo.type} onBlur={() => this.handleBlur()} onSave={(type) => this.handleSave(todo.id, todo.text as string, type, todo.date)} />;
         }
         return (
             <ListItem>
@@ -66,12 +66,12 @@ export class TodoItem extends React.Component<IProps, IState> {
         this.setState({ editing: true });
     }
 
-    private handleSave(id: number, text: string, type: string) {
+    private handleSave(id: number, text: string, type: string, date: number) {
         console.log(id);
         if (text.length === 0) {
             this.props.deleteTodo(id);
         } else {
-            this.props.editTodo({ id, text, type });
+            this.props.editTodo({ id, text, type, date});
         }
         this.setState({ editing: false, editingType: false });
     }

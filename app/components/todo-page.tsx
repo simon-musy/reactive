@@ -14,7 +14,7 @@ export interface TodoPageStateProps {
 
 export interface TodoPageDispatchProps {
     deleteTodo: (id: number) => void;
-    addTodo: (text: string) => void;
+    addTodo: (todo: Todo) => void;
     editTodo: (item: Todo) => void;
     editDate: (date: number) => void;
 }
@@ -64,7 +64,7 @@ export class TodoPage extends React.Component<TodoPageProps, any> {
 
     private handleSave(text: string) {
         if (text.length !== 0) {
-            this.props.addTodo(text);
+            this.props.addTodo({type: "task", date: this.props.date, text, id: 0});
         }
     }
 }

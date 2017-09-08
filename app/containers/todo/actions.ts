@@ -9,9 +9,8 @@ export const EditDateActionType = "EDIT_DATE";
 
 // Actions
 export type DeleteTodoAction = TypedAction<typeof DeleteTodoActionType, number>;
-export type AddTodoAction = TypedAction<typeof AddTodoActionType, string>;
+export type AddTodoAction = TypedAction<typeof AddTodoActionType, Todo>;
 export type EditTodoAction = TypedAction<typeof EditTodoActionType, Todo>;
-
 export type EditDateAction = TypedAction<typeof EditDateActionType, number>;
 
 export type Actions =
@@ -22,6 +21,6 @@ export type Actions =
 
 // Action creators
 export const deleteTodoAction = (id: number): DeleteTodoAction => createAction(DeleteTodoActionType, id);
-export const addTodoAction = (text: string): AddTodoAction => createAction(AddTodoActionType, text);
+export const addTodoAction = (todo: Todo): AddTodoAction => createAction(AddTodoActionType, todo);
 export const editTodoAction = (item: Todo): EditTodoAction => createAction(EditTodoActionType, item);
 export const editDateAction = (date: number): EditDateAction => createAction(EditDateActionType, date);
