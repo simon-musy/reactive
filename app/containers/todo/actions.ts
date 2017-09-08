@@ -5,18 +5,23 @@ import { Todo } from "./state";
 export const DeleteTodoActionType = "DELETE_TODO";
 export const AddTodoActionType = "ADD_TODO";
 export const EditTodoActionType = "EDIT_TODO";
+export const EditDateActionType = "EDIT_DATE";
 
 // Actions
 export type DeleteTodoAction = TypedAction<typeof DeleteTodoActionType, number>;
 export type AddTodoAction = TypedAction<typeof AddTodoActionType, string>;
 export type EditTodoAction = TypedAction<typeof EditTodoActionType, Todo>;
 
+export type EditDateAction = TypedAction<typeof EditDateActionType, number>;
+
 export type Actions =
     DeleteTodoAction
     | AddTodoAction
-    | EditTodoAction;
+    | EditTodoAction
+    | EditDateAction;
 
 // Action creators
 export const deleteTodoAction = (id: number): DeleteTodoAction => createAction(DeleteTodoActionType, id);
 export const addTodoAction = (text: string): AddTodoAction => createAction(AddTodoActionType, text);
 export const editTodoAction = (item: Todo): EditTodoAction => createAction(EditTodoActionType, item);
+export const editDateAction = (date: number): EditDateAction => createAction(EditDateActionType, date);

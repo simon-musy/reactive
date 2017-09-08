@@ -4,14 +4,14 @@ import { MapStateToProps, MapDispatchToPropsFunction } from "react-redux";
 import { TodoPageStateProps, TodoPageDispatchProps } from "components/todo-page";
 import { AppState } from "../../app-state";
 import { Dispatch, bindActionCreators } from "redux";
-import { deleteTodoAction, addTodoAction, editTodoAction } from "containers/todo/actions";
+import { deleteTodoAction, addTodoAction, editTodoAction, editDateAction } from "containers/todo/actions";
 
 export const mapStateToProps: MapStateToProps<TodoPageStateProps, any> = (state: AppState, ownProps: any) => {
-    const pageState = {todos: state.todo.todos};
+    const pageState = {todos: state.todo.todos, date: state.todo.date};
     console.log(state.todo);
     return pageState;
 };
 
 export const mapDispatchToProps: MapDispatchToPropsFunction<TodoPageDispatchProps, any> = (dispatch: Dispatch<any>, ownProps: any) => {
-    return bindActionCreators({ deleteTodo: deleteTodoAction, addTodo: addTodoAction, editTodo: editTodoAction }, dispatch);
+    return bindActionCreators({ deleteTodo: deleteTodoAction, addTodo: addTodoAction, editTodo: editTodoAction, editDate: editDateAction }, dispatch);
 };

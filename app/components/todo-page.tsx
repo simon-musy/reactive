@@ -9,12 +9,14 @@ import DatePicker from "react-datepicker";
 
 export interface TodoPageStateProps {
     readonly todos: Todo[];
+    readonly date: number;
 }
 
 export interface TodoPageDispatchProps {
     deleteTodo: (id: number) => void;
     addTodo: (text: string) => void;
     editTodo: (item: Todo) => void;
+    editDate: (date: number) => void;
 }
 
 export interface TodoPageProps extends TodoPageStateProps, TodoPageDispatchProps {
@@ -31,9 +33,6 @@ export class TodoPage extends React.Component<TodoPageProps, any> {
     constructor(props: TodoPageProps) {
         super(props);
         this.props = props;
-        this.state = {
-            startDate: moment()
-        };
     }
 
     public render() {
@@ -53,16 +52,14 @@ export class TodoPage extends React.Component<TodoPageProps, any> {
                             deleteTodo={this.props.deleteTodo} />)}
                 </List>
                 <DatePicker
-                    selected={this.state.startDate}
+                    selected={moment(this.props.date)}
                     onChange={this.handleChange.bind(this)}
                 />
             </div>
         );
     }
     private handleChange(date: moment.Moment) {
-        this.setState({
-            startDate: date
-        });
+        this.props.editDate(date.valueOf());
     }
 
     private handleSave(text: string) {
