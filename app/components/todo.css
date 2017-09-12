@@ -29,6 +29,11 @@
   background-size: 10px 16px;
 }
 
+.migrated{
+  background-image: url("./images/migrated.svg");
+  background-size: 10px 12px;
+}
+
 label{
   vertical-align: middle;
 }

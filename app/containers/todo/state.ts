@@ -7,7 +7,7 @@ export class Todo {
     public date: number;
 }
 
-export const todoTypes: string[] = ["task", "task-completed", "event", "note"];
+export const todoTypes: string[] = ["task", "task-completed", "event", "note", "migrated"];
 
 export class TodoState {
     public static debug: TodoState = new TodoState([
