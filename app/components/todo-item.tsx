@@ -88,6 +88,7 @@ export class TodoItem extends React.Component<IProps, IState> {
     private handleMigration(date: moment.Moment) {
         console.log("MIGRATING");
         this.props.migrateTodo({migratedTodo: this.state.migratedTodo as Todo, date: date.valueOf()});
+        this.handleBlur();
     }
 
     private handleTypeChange(todo: Todo, type: string) {
