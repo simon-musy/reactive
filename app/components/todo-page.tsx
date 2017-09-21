@@ -64,9 +64,9 @@ export class TodoPage extends React.Component<TodoPageProps, any> {
         this.props.editDate(date.valueOf());
     }
 
-    private handleSave(text: string) {
+    private handleSave(text: string, type: string) {
         if (text.length !== 0) {
-            this.props.addTodo({type: "task", date: this.props.date, text, id: 0});
+            this.props.addTodo({type, date: this.props.date, text, id: 0});
         }
     }
 }
