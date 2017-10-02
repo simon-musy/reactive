@@ -66,14 +66,14 @@ export class TodoItem extends React.Component<IProps, IState> {
                 withPortal />;
         }
         return (
-            <ListItem>
+            <li>
                 <div>
                     <button className={"button-image " + todo.type} onClick={() => this.handleTypeClick()} />
                     {element}
                 </div>
                 {typeElement}
                 {migratingElement}
-            </ListItem>
+            </li>
         );
     }
 

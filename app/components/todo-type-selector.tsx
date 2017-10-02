@@ -19,7 +19,8 @@ export class TodoTypeSelector extends React.Component<TodoTypeSelectorProps, obj
                 {this.props.types.map(type => <button
                     key={type}
                     className={"button-image " + type}
-                    onClick={() => this.props.onSave(type)}/>)}
+                    onClick={() => this.props.onSave(type)} />)}
+                <br />
             </div>
         );
     }

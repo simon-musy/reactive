@@ -45,7 +45,7 @@ export class TodoPage extends React.Component<TodoPageProps, any> {
                     newTodo
                     onSave={this.handleSave.bind(this)}
                     placeholder="What needs to be done?" />
-                <List>
+                <ul>
                     {this.props.todos.map(todo =>
                         <TodoItem
                             key={todo.id}
@@ -53,7 +53,7 @@ export class TodoPage extends React.Component<TodoPageProps, any> {
                             editTodo={this.props.editTodo}
                             deleteTodo={this.props.deleteTodo}
                             migrateTodo={this.props.migrateTodo} />)}
-                </List>
+                </ul>
                 <DatePicker
                     selected={moment(this.props.date)}
                     onChange={this.handleChange.bind(this)}/>
