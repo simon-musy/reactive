@@ -16,10 +16,12 @@ export class TodoTypeSelector extends React.Component<TodoTypeSelectorProps, obj
     public render() {
         return (
             <div>
-                {this.props.types.map(type => <button
+                {this.props.types.map(type => <button type="submit"
                     key={type}
                     className={"button-image " + type}
-                    onClick={() => this.props.onSave(type)} />)}
+                    onClick={() => this.props.onSave(type)}
+                    onBlur={() => this.props.onBlur()}
+                    autoFocus={type === this.props.types[0]} />)}
                 <br />
             </div>
         );
