@@ -71,11 +71,11 @@ export class TodoItem extends React.Component<IProps, IState> {
                 withPortal />;
         }
         return (
-            <ListItem>
+            <li>
                 {typeElement}
                 {element}
                 {migratingElement}
-            </ListItem>
+            </li>
         );
     }
 
