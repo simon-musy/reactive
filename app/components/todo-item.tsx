@@ -2,7 +2,7 @@ import * as React from "react";
 import { TodoTextInput } from "./todo-text-input";
 import { TodoTypeSelector } from "./todo-type-selector";
 import { todoTypes, Todo } from "../containers/todo/state";
-import { Button, Label, ListItem } from "semantic-ui-react";
+import { Button, Label, ListItem, Dropdown } from "semantic-ui-react";
 import { MigrationData } from "../containers/todo/actions";
 import * as moment from "moment";
 import DatePicker from "react-datepicker";
@@ -53,10 +53,15 @@ export class TodoItem extends React.Component<IProps, IState> {
         let typeElement;
         let migratingElement;
         if (this.state.editingType) {
-            typeElement = <TodoTypeSelector
-                types={this.getOtherTypes(todo.type)}
-                onBlur={() => this.handleBlur()}
-                onSave={(type) => this.handleTypeChange(todo, type)} />;
+            typeElement = 
+                    <TodoTypeSelector
+                    types={this.getOtherTypes(todo.type)}
+                    onBlur={() => this.handleBlur()}
+                    onSave={(type) => this.handleTypeChange(todo, type)}
+                    currentType={this.props.todo.type} />;
+        }
+        else {
+            typeElement = <button className={"button-image " + todo.type} onClick={() => this.handleTypeClick()} />;
         }
         if (this.state.migrating) {
             migratingElement = <DatePicker
@@ -67,11 +72,8 @@ export class TodoItem extends React.Component<IProps, IState> {
         }
         return (
             <ListItem>
-                <div>
-                    <button className={"button-image " + todo.type} onClick={() => this.handleTypeClick()} />
-                    {element}
-                </div>
                 {typeElement}
+                {element}
                 {migratingElement}
             </ListItem>
         );
@@ -87,7 +89,7 @@ export class TodoItem extends React.Component<IProps, IState> {
 
     private handleMigration(date: moment.Moment) {
         console.log("MIGRATING");
-        this.props.migrateTodo({migratedTodo: this.state.migratedTodo as Todo, date: date.valueOf()});
+        this.props.migrateTodo({ migratedTodo: this.state.migratedTodo as Todo, date: date.valueOf() });
         this.handleBlur();
     }
 

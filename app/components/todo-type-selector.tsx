@@ -1,11 +1,13 @@
 import * as React from "react";
-import { Button } from "semantic-ui-react";
+import { Button, Dropdown } from "semantic-ui-react";
 const styles = require("./todo.css");
 
 interface TodoTypeSelectorProps {
     onSave: (selectedType: string) => void;
     onBlur: () => void;
     types: string[];
+
+    currentType: string;
 }
 
 export class TodoTypeSelector extends React.Component<TodoTypeSelectorProps, object> {
@@ -15,12 +17,11 @@ export class TodoTypeSelector extends React.Component<TodoTypeSelectorProps, obj
 
     public render() {
         return (
-            <div>
-                {this.props.types.map(type => <button
-                    key={type}
-                    className={"button-image " + type}
-                    onClick={() => this.props.onSave(type)}/>)}
-            </div>
+            <Dropdown closeOnBlur={true} autoFocus={true} className={"button-image " + this.props.currentType} defaultOpen onBlur={() => this.props.onBlur()}>
+                <Dropdown.Menu>
+                    {this.props.types.map(type => <Dropdown.Item key={type} className={"button-image " + type} onClick={() => this.props.onSave(type)}/>)}
+                </Dropdown.Menu>
+            </Dropdown>
         );
     }
 }

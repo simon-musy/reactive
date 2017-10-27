@@ -33,7 +33,8 @@ export class TodoTextInput extends React.Component<TodoTextInputProps, TodoTextI
             typeElement = <TodoTypeSelector
                 types={["task", "event", "note"]}
                 onBlur={this.handleBlur.bind(this)}
-                onSave={(type) => this.handleTypeChange(type)} />;
+                onSave={(type) => this.handleTypeChange(type)} 
+                currentType={"add"}/>;
         }
         else if (this.props.newTodo && this.state.type !== undefined) {
             typeElement = <div className={"button-image " + this.state.type} />;
